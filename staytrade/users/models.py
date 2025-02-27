@@ -34,3 +34,9 @@ class User(AbstractUser):
 
         """
         return reverse("users:detail", kwargs={"username": self.username})
+
+    def is_provider(self):
+        return self.account_type == self.AccountTypes.PROVIDER
+
+    def is_trader(self):
+        return self.account_type == self.AccountTypes.TRADER

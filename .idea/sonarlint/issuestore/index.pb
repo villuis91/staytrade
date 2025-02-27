@@ -12,10 +12,6 @@ P
 O
 .devcontainer/devcontainer.json,b/3/b34062a34eb177d6796c9ce334de4930d86f38c1
 G
-.pre-commit-config.yaml,e/7/e7d14d429f898757a423156de0e8c49d75240694
-F
-.github/dependabot.yml,0/9/091aff741808a09242f252264b14f4a9adaa5305
-G
 docker-compose.docs.yml,a/7/a7a558d08b10555df6bdc9b572c4ad6732542e52
 F
 requirements/local.txt,8/8/8892fad390a2a63633fc1995fd5948ab29910d63
@@ -27,8 +23,6 @@ H
 docker-compose.local.yml,f/5/f5210798eba2e572e628b54ebe9c4be2a3db1334
 H
 config/settings/local.py,a/4/a4b372c97b98db3f4bc440cd12ac5d9fa4cbaf7c
-I
-staytrade/users/models.py,2/5/251901cf00c9cfe2f98068355686ae4a76d6030c
 R
 "staytrade/users/api/serializers.py,c/e/cebe24478bec9dd032fcb63046e937b652ee7930
 U

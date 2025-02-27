@@ -67,9 +67,7 @@ statics:
 	@$(DOCKER_COMPOSE_COMMAND) -f docker-compose.local.yml run --rm django python manage.py collectstatic
 
 test:
-	# Check if variable version is set or default to latest
-	@if [ -z "$(module)" ]; then module=.; fi
-	@$(DOCKER_COMPOSE_COMMAND) -f docker-compose.local.yml run --rm django python manage.py test $(module)
+	@docker compose -f docker-compose.local.yml run --rm django pytest -v
 
 coverage:
 	@$(DOCKER_COMPOSE_COMMAND) -f docker-compose.local.yml run --rm django sh -c "coverage run --source='.' -m pytest -W ignore . ; coverage html"
