@@ -1,8 +1,51 @@
 
 O
 compose/local/django/Dockerfile,1/8/183df47db4fd2caa6e8adf01b7b266acc05d6312
-:
-
-.gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
 @
 requirements.txt,1/9/19359a61ae2446b51b549167b014da2fcf265768
+>
+pyproject.toml,5/d/5d07e7d72637aa0d59c89d381fe6dc4cf46e2491
+>
+.gitattributes,2/4/24139dae656713ba861751fb2c2ac38839349a7a
+P
+ .devcontainer/bashrc.override.sh,c/6/c6af54539c61437b6d2a2602592e532b6226cd82
+O
+.devcontainer/devcontainer.json,b/3/b34062a34eb177d6796c9ce334de4930d86f38c1
+G
+.pre-commit-config.yaml,e/7/e7d14d429f898757a423156de0e8c49d75240694
+F
+.github/dependabot.yml,0/9/091aff741808a09242f252264b14f4a9adaa5305
+G
+docker-compose.docs.yml,a/7/a7a558d08b10555df6bdc9b572c4ad6732542e52
+F
+requirements/local.txt,8/8/8892fad390a2a63633fc1995fd5948ab29910d63
+E
+staytrade/conftest.py,b/c/bc82a07b26a14a792e8397856162b0cf7262edb3
+9
+	README.md,8/e/8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
+H
+docker-compose.local.yml,f/5/f5210798eba2e572e628b54ebe9c4be2a3db1334
+H
+config/settings/local.py,a/4/a4b372c97b98db3f4bc440cd12ac5d9fa4cbaf7c
+I
+staytrade/users/models.py,2/5/251901cf00c9cfe2f98068355686ae4a76d6030c
+R
+"staytrade/users/api/serializers.py,c/e/cebe24478bec9dd032fcb63046e937b652ee7930
+U
+%staytrade/users/context_processors.py,3/3/33e7c7ea1abff38b944aa5d1b87909cd8a47e268
+H
+staytrade/users/forms.py,6/c/6ce8bdc287aed60d34c99fea65c31ab259e9a68d
+L
+staytrade/users/api/views.py,0/2/027271d7de73d889b289f63230243979a3406084
+D
+.envs/.local/.django,6/9/6910fa378985b1c1534386a5f802f531fa5c1c9c
+I
+.envs/.production/.django,3/7/37458d7a9762ebed72807cdb7467c4e26bcf5bba
+F
+.envs/.local/.postgres,c/5/c5e93215cbd8e049e2870b78a0f8fb6bfe53322e
+D
+config/celery_app.py,a/1/a13d4cdda67259bf83bb423900c2fdc9ce37c0ae
+>
+config/asgi.py,5/9/597ed58946079f795070145abd2ba40aaf51a0ae
+C
+config/websocket.py,9/b/9b72da4f376f1a14e5d86a3c21db025550d70ba7
