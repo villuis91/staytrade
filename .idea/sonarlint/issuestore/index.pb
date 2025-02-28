@@ -25,8 +25,6 @@ H
 config/settings/local.py,a/4/a4b372c97b98db3f4bc440cd12ac5d9fa4cbaf7c
 R
 "staytrade/users/api/serializers.py,c/e/cebe24478bec9dd032fcb63046e937b652ee7930
-U
-%staytrade/users/context_processors.py,3/3/33e7c7ea1abff38b944aa5d1b87909cd8a47e268
 H
 staytrade/users/forms.py,6/c/6ce8bdc287aed60d34c99fea65c31ab259e9a68d
 L
@@ -37,8 +35,6 @@ I
 .envs/.production/.django,3/7/37458d7a9762ebed72807cdb7467c4e26bcf5bba
 F
 .envs/.local/.postgres,c/5/c5e93215cbd8e049e2870b78a0f8fb6bfe53322e
-D
-config/celery_app.py,a/1/a13d4cdda67259bf83bb423900c2fdc9ce37c0ae
 >
 config/asgi.py,5/9/597ed58946079f795070145abd2ba40aaf51a0ae
 C

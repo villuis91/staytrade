@@ -23,6 +23,7 @@ urlpatterns = [
     # User management
     path("users/", include("staytrade.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
+    path("providers/", include("staytrade.providers.urls")),
     # Your stuff: custom urls includes go here
     # ...
     # Media files
