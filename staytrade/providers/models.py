@@ -12,6 +12,8 @@ class Hotel(SoftDeletedTimestamped):
         on_delete=models.DO_NOTHING,
         verbose_name=_("User that creates hotel."),
         help_text="User that added the hotel.",
+        null=False,
+        blank=False,
     )
     account = models.ForeignKey(
         EnterpriseAccount,
@@ -23,7 +25,11 @@ class Hotel(SoftDeletedTimestamped):
     )
 
     # Description fields
-    name = models.CharField(max_length=255)
+    name = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
     description = models.TextField(
         verbose_name=_("Hotel's description."), help_text=_("Brief hotel's description")
     )
@@ -31,11 +37,21 @@ class Hotel(SoftDeletedTimestamped):
         verbose_name=_("Hotel stars"),
         help_text=_("Hotel stars"),
         validators=[MinValueValidator(0), MaxValueValidator(5)],
+        null=False,
+        blank=False,
     )
 
     # Urls
-    google_maps_location = models.URLField(verbose_name=_("Google maps url."))
-    site_url = models.URLField(verbose_name=_("Site url."))
+    google_maps_location = models.URLField(
+        verbose_name=_("Google maps url."),
+        null=True,
+        blank=True,
+    )
+    site_url = models.URLField(
+        verbose_name=_("Site url."),
+        null=True,
+        blank=True,
+    )
 
     # Pictures
     # Consider to use a model linked to Rooms with images +Calls but +elegant
@@ -67,14 +83,25 @@ class Hotel(SoftDeletedTimestamped):
 
 
 class RoomType(SoftDeletedTimestamped):
-    name = models.CharField(max_length=255)
+    name = models.CharField(
+        max_length=255,
+        null=False,
+        blank=False,
+    )
     description = models.TextField()
-    hotel = models.ForeignKey(Hotel, on_delete=models.DO_NOTHING)
+    hotel = models.ForeignKey(
+        Hotel,
+        on_delete=models.DO_NOTHING,
+        null=False,
+        blank=False,
+    )
     created_by = models.ForeignKey(
         User,
         on_delete=models.DO_NOTHING,
         verbose_name=_("User that creates hotel."),
         help_text=_("User that added the hotel."),
+        null=False,
+        blank=False,
     )
     # Pictures
     _upload_destine_root = "room-pictures/"
@@ -106,11 +133,20 @@ class RoomType(SoftDeletedTimestamped):
 
 class RoomTypeAvailability(TimeStampedModel):
     room_type = models.ForeignKey(
-        RoomType, on_delete=models.CASCADE, related_name="availabilities"
+        RoomType,
+        on_delete=models.CASCADE,
+        related_name="availabilities",
+        null=False,
+        blank=False,
     )
-    start_date = models.DateField()
-    end_date = models.DateField()
-    available_rooms = models.PositiveIntegerField()
+    start_date = models.DateField(
+        null=False,
+        blank=False,
+    )
+    end_date = models.DateField(
+        null=False,
+        blank=False,
+    )
 
     # Date range intersections must be controlled
     class Meta:
@@ -122,9 +158,18 @@ class Room(SoftDeletedTimestamped):
         AVAILABLE = "available", _("Available")
         OCCUPIED = "occupied", _("Occupied")
 
-    room_type = models.ForeignKey(RoomType, on_delete=models.DO_NOTHING)
+    room_type = models.ForeignKey(
+        RoomType,
+        on_delete=models.DO_NOTHING,
+        null=False,
+        blank=False,
+    )
     name_or_number = models.CharField(
         max_length=255,
+        verbose_name=_("Room name or number."),
+        help_text=_("Name or number of the room."),
+        null=False,
+        blank=False,
     )
     capacity = models.PositiveIntegerField(
         verbose_name=_("Capacity"),
@@ -136,6 +181,8 @@ class Room(SoftDeletedTimestamped):
         choices=RoomStatus.choices,
         default=RoomStatus.AVAILABLE,
         verbose_name=_("Room status"),
+        null=False,
+        blank=False,
     )
     internal_notes = models.TextField(
         blank=True,
@@ -149,17 +196,44 @@ class RoomAvailability(TimeStampedModel):
     room = models.ForeignKey(
         Room, on_delete=models.CASCADE, related_name="availabilities"
     )
-    start_date = models.DateField()
-    end_date = models.DateField()
-    is_available = models.BooleanField(default=True)
+    start_date = models.DateField(
+        null=False,
+        blank=False,
+    )
+    end_date = models.DateField(
+        null=False,
+        blank=False,
+    )
+    is_available = models.BooleanField(
+        default=True,
+        null=False,
+        blank=False,
+    )
 
     class Meta:
         unique_together = ("room", "start_date", "end_date")
 
 
 class RoomNight(SoftDeletedTimestamped):
-    entry_datetime = models.DateTimeField()
-    departure_datetime = models.DateTimeField()
-    entry_date = models.DateField()
-    departure_date = models.DateField()
-    room = models.ForeignKey(Room, on_delete=models.DO_NOTHING)
+    entry_datetime = models.DateTimeField(
+        null=False,
+        blank=False,
+    )
+    departure_datetime = models.DateTimeField(
+        null=False,
+        blank=False,
+    )
+    entry_date = models.DateField(
+        null=False,
+        blank=False,
+    )
+    departure_date = models.DateField(
+        null=False,
+        blank=False,
+    )
+    room = models.ForeignKey(
+        Room,
+        on_delete=models.DO_NOTHING,
+        null=False,
+        blank=False,
+    )
