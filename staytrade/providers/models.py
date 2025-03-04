@@ -10,7 +10,7 @@ class Hotel(SoftDeletedTimestamped):
     created_by = models.ForeignKey(
         User,
         on_delete=models.DO_NOTHING,
-        verbose_name=_("Userr that creates hotel."),
+        verbose_name=_("User that creates hotel."),
         help_text="User that added the hotel.",
     )
     account = models.ForeignKey(
@@ -23,7 +23,7 @@ class Hotel(SoftDeletedTimestamped):
     )
 
     # Description fields
-    name = models.TextField(max_length=255)
+    name = models.CharField(max_length=255)
     description = models.TextField(
         verbose_name=_("Hotel's description."), help_text=_("Brief hotel's description")
     )
@@ -73,7 +73,7 @@ class RoomType(SoftDeletedTimestamped):
     created_by = models.ForeignKey(
         User,
         on_delete=models.DO_NOTHING,
-        verbose_name=_("Userr that creates hotel."),
+        verbose_name=_("User that creates hotel."),
         help_text=_("User that added the hotel."),
     )
     # Pictures
