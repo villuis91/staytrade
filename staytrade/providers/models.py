@@ -104,7 +104,7 @@ class RoomType(SoftDeletedTimestamped):
     )
 
 
-class RoomTypeAvailability(SoftDeletedTimestamped):
+class RoomTypeAvailability(TimeStampedModel):
     room_type = models.ForeignKey(
         RoomType, on_delete=models.CASCADE, related_name="availabilities"
     )
@@ -161,5 +161,5 @@ class RoomNight(SoftDeletedTimestamped):
     entry_datetime = models.DateTimeField()
     departure_datetime = models.DateTimeField()
     entry_date = models.DateField()
-    departure_date = models.DateField
+    departure_date = models.DateField()
     room = models.ForeignKey(Room, on_delete=models.DO_NOTHING)
