@@ -3,7 +3,7 @@ DOCKER_COMPOSE_COMMAND := $(shell docker compose version > /dev/null 2>&1 && ech
 
 start: ## Start the docker containers
 	@echo "Starting the docker containers"
-	@$(DOCKER_COMPOSE_COMMAND) -f docker-compose.local.yml up
+	@$(DOCKER_COMPOSE_COMMAND) -f docker-compose.local.yml up --remove-orphans
 	@echo "Containers started - http://localhost:8000"
 
 stop: ## Stop Containers
