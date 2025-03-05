@@ -25,4 +25,5 @@ django-cors-headers==4.7.0  # https://github.com/adamchainz/django-cors-headers
 # DRF-spectacular for api documentation
 drf-spectacular==0.28.0  # https://github.com/tfranzel/drf-spectacular
 # Django soft delete
-django-soft-delete==1.0.18 # https://pypi.org/project/django-soft-delete/
+django-soft-delete==1.0.18  # https://pypi.org/project/django-soft-delete/
+django-termsandconditions==2.0.12  # https://django-termsandconditions.readthedocs.io/#installation
