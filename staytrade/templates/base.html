@@ -26,7 +26,6 @@
       <script src="https://unpkg.com/htmx.org@1.9.10"></script>
       <!-- Estilos personalizados -->
       <link rel="stylesheet" href="{% static 'css/main.css' %}" />
-      <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
       <link rel="stylesheet" href="{% static 'css/components.css' %}" />
     {% endblock css %}
     {% block javascript %}
@@ -41,66 +40,15 @@
   </head>
   <body>
     <div class="app-container">
-      {% if request.user.is_authenticated %}
-        <!-- Barra lateral -->
-        <aside class="sidebar">
-          <div class="sidebar-header">
-            <h2>StayTrade</h2>
-          </div>
-          <nav class="sidebar-menu">
-            <ul>
-              <li class="sidebar-menu-item">
-                <a href="{% url 'home' %}" class="sidebar-menu-link">{% translate "Home" %}</a>
-              </li>
-              {% if request.user.is_provider %}
-                <li class="sidebar-menu-item">
-                  <a href="{% url 'hotels:list' %}" class="sidebar-menu-link">{% translate "My Hotels" %}</a>
-                </li>
-              {% endif %}
-              <li class="sidebar-menu-item">
-                <a href="{% url 'users:detail' request.user.username %}"
-                   class="sidebar-menu-link">{% translate "My Profile" %}</a>
-              </li>
-            </ul>
-          </nav>
-        </aside>
+      {% if user.is_authenticated %}
+        {% include 'components/sidebar.html' %}
       {% endif %}
       <div class="main-content">
         <!-- Header -->
-        <header class="main-header">
-          <nav class="navbar navbar-expand-lg">
-            <div class="container-fluid">
-              {% if not request.user.is_authenticated %}
-                <a class="navbar-brand" href="{% url 'home' %}">StayTrade</a>
-              {% endif %}
-              <div class="ms-auto">
-                {% if request.user.is_authenticated %}
-                  <a href="{% url 'account_logout' %}" class="btn btn-outline-primary">{% translate "Sign Out" %}</a>
-                {% else %}
-                  <div class="d-flex gap-2">
-                    {% if ACCOUNT_ALLOW_REGISTRATION %}
-                      <a href="{% url 'account_signup' %}" class="btn btn-outline-primary">{% translate "Sign Up" %}</a>
-                    {% endif %}
-                    <a href="{% url 'account_login' %}" class="btn btn-primary">{% translate "Sign In" %}</a>
-                  </div>
-                {% endif %}
-              </div>
-            </div>
-          </nav>
-        </header>
+        {% include 'components/header.html' %}
         <!-- Mensajes -->
         {% if messages %}
-          <div class="messages-container">
-            {% for message in messages %}
-              <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-                {{ message }}
-                <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"
-                        aria-label="Close"></button>
-              </div>
-            {% endfor %}
-          </div>
+          {% include 'components/footer.html' %}
         {% endif %}
         <!-- Contenido principal -->
         <main class="content">
@@ -108,11 +56,7 @@
           {% endblock content %}
         </main>
         <!-- Footer -->
-        <footer class="main-footer">
-          <div class="container">
-            <p>copy; {% now "Y" %} StayTrade. {% translate "All rights reserved" %}.</p>
-          </div>
-        </footer>
+        {% include 'components/footer.html' %}
       </div>
     </div>
     {% block modal %}

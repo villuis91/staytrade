@@ -1,3 +1,8 @@
+{% load static i18n %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
+{% endblock css %}
 <aside class="sidebar">
   <div class="sidebar-header">
     <h2>StayTrade</h2>
@@ -5,21 +10,17 @@
   <nav class="sidebar-menu">
     <ul>
       <li class="sidebar-menu-item">
-        <a href="{% url 'home' %}" class="sidebar-menu-link">Inicio</a>
+        <a href="{% url 'home' %}" class="sidebar-menu-link">{% translate "Home" %}</a>
       </li>
-      {% if user.is_provider %}
+      {% if request.user.is_provider %}
         <li class="sidebar-menu-item">
-          <a href="{% url 'hotels' %}" class="sidebar-menu-link">Mis Hoteles</a>
-        </li>
-        <li class="sidebar-menu-item">
-          <a href="{% url 'reservations' %}" class="sidebar-menu-link">Reservaciones</a>
+          <a href="{% url 'hotels:list' %}" class="sidebar-menu-link">{% translate "My Hotels" %}</a>
         </li>
       {% endif %}
-      {% if user.is_trader %}
-        <li class="sidebar-menu-item">
-          <a href="{% url 'bookings' %}" class="sidebar-menu-link">Mis Reservas</a>
-        </li>
-      {% endif %}
+      <li class="sidebar-menu-item">
+        <a href="{% url 'users:detail' request.user.username %}"
+           class="sidebar-menu-link">{% translate "My Profile" %}</a>
+      </li>
     </ul>
   </nav>
 </aside>
