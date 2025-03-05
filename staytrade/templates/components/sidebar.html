@@ -1,0 +1,25 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <h2>StayTrade</h2>
+  </div>
+  <nav class="sidebar-menu">
+    <ul>
+      <li class="sidebar-menu-item">
+        <a href="{% url 'home' %}" class="sidebar-menu-link">Inicio</a>
+      </li>
+      {% if user.is_provider %}
+        <li class="sidebar-menu-item">
+          <a href="{% url 'hotels' %}" class="sidebar-menu-link">Mis Hoteles</a>
+        </li>
+        <li class="sidebar-menu-item">
+          <a href="{% url 'reservations' %}" class="sidebar-menu-link">Reservaciones</a>
+        </li>
+      {% endif %}
+      {% if user.is_trader %}
+        <li class="sidebar-menu-item">
+          <a href="{% url 'bookings' %}" class="sidebar-menu-link">Mis Reservas</a>
+        </li>
+      {% endif %}
+    </ul>
+  </nav>
+</aside>

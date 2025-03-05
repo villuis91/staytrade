@@ -5,30 +5,30 @@
 <html lang="{{ LANGUAGE_CODE }}">
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-    <title>
-      {% block title %}
-        Staytrade
-      {% endblock title %}
-    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Hotel rooms trade app" />
     <meta name="author" content="Vicent Lluís Tortosa Bataller" />
+    <title>
+      {% block title %}
+        StayTrade
+      {% endblock title %}
+    </title>
+    <!-- Favicon -->
     <link rel="icon" href="{% static 'images/favicons/favicon.ico' %}" />
     {% block css %}
-      <!-- Latest compiled and minified Bootstrap CSS -->
+      <!-- Bootstrap CSS -->
       <link rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css"
             integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA=="
             crossorigin="anonymous"
             referrerpolicy="no-referrer" />
-      <!-- Your stuff: Third-party CSS libraries go here -->
-      <!-- This file stores project-specific CSS -->
-      <link href="{% static 'css/project.css' %}" rel="stylesheet" />
+      <!-- HTMX -->
+      <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+      <!-- Estilos personalizados -->
+      <link rel="stylesheet" href="{% static 'css/main.css' %}" />
+      <link rel="stylesheet" href="{% static 'css/sidebar.css' %}" />
+      <link rel="stylesheet" href="{% static 'css/components.css' %}" />
     {% endblock css %}
-    <!-- Le javascript
-    ================================================== -->
-    {# Placed at the top of the document so pages load faster with defer #}
     {% block javascript %}
       <!-- Bootstrap JS -->
       <script defer
@@ -36,92 +36,88 @@
               integrity="sha512-1/RvZTcCDEUjY/CypiMz+iqqtaoQfAITmNSJY17Myp4Ms5mdxPS5UV7iOfdZoxcGhzFbOm6sntTKJppjvuhg4g=="
               crossorigin="anonymous"
               referrerpolicy="no-referrer"></script>
-      <!-- Your stuff: Third-party javascript libraries go here -->
-      <!-- place project specific Javascript in this file -->
-      <script defer src="{% static 'js/project.js' %}"></script>
+      <script defer src="{% static 'js/main.js' %}"></script>
     {% endblock javascript %}
   </head>
-  <body class="{% block bodyclass %}{% endblock bodyclass %}">
-    {% block body %}
-      <div class="mb-1">
-        <nav class="navbar navbar-expand-md navbar-light bg-light">
-          <div class="container-fluid">
-            <button class="navbar-toggler navbar-toggler-right"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent"
-                    aria-controls="navbarSupportedContent"
-                    aria-expanded="false"
-                    aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="{% url 'home' %}">Staytrade</a>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <ul class="navbar-nav mr-auto">
-                <li class="nav-item active">
-                  <a class="nav-link" href="{% url 'home' %}">Home <span class="visually-hidden">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="{% url 'about' %}">About</a>
-                </li>
-                {% if request.user.is_authenticated %}
-                  <li class="nav-item">
-                    <a class="nav-link"
-                       href="{% url 'users:detail' request.user.username %}">{% translate "My Profile" %}</a>
-                  </li>
-                  <li class="nav-item">
-                    {# URL provided by django-allauth/account/urls.py #}
-                    <a class="nav-link" href="{% url 'account_logout' %}">{% translate "Sign Out" %}</a>
-                  </li>
-                {% else %}
-                  {% if ACCOUNT_ALLOW_REGISTRATION %}
-                    <li class="nav-item">
-                      {# URL provided by django-allauth/account/urls.py #}
-                      <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">{% translate "Sign Up" %}</a>
-                    </li>
-                  {% endif %}
-                  <li class="nav-item">
-                    {# URL provided by django-allauth/account/urls.py #}
-                    <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">{% translate "Sign In" %}</a>
-                  </li>
-                {% endif %}
-              </ul>
-            </div>
+  <body>
+    <div class="app-container">
+      {% if request.user.is_authenticated %}
+        <!-- Barra lateral -->
+        <aside class="sidebar">
+          <div class="sidebar-header">
+            <h2>StayTrade</h2>
           </div>
-        </nav>
-      </div>
-      <div class="container">
-        {% if messages %}
-          {% for message in messages %}
-            <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
-              {{ message }}
-              <button type="button"
-                      class="btn-close"
-                      data-bs-dismiss="alert"
-                      aria-label="Close"></button>
+          <nav class="sidebar-menu">
+            <ul>
+              <li class="sidebar-menu-item">
+                <a href="{% url 'home' %}" class="sidebar-menu-link">{% translate "Home" %}</a>
+              </li>
+              {% if request.user.is_provider %}
+                <li class="sidebar-menu-item">
+                  <a href="{% url 'hotels:list' %}" class="sidebar-menu-link">{% translate "My Hotels" %}</a>
+                </li>
+              {% endif %}
+              <li class="sidebar-menu-item">
+                <a href="{% url 'users:detail' request.user.username %}"
+                   class="sidebar-menu-link">{% translate "My Profile" %}</a>
+              </li>
+            </ul>
+          </nav>
+        </aside>
+      {% endif %}
+      <div class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+          <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+              {% if not request.user.is_authenticated %}
+                <a class="navbar-brand" href="{% url 'home' %}">StayTrade</a>
+              {% endif %}
+              <div class="ms-auto">
+                {% if request.user.is_authenticated %}
+                  <a href="{% url 'account_logout' %}" class="btn btn-outline-primary">{% translate "Sign Out" %}</a>
+                {% else %}
+                  <div class="d-flex gap-2">
+                    {% if ACCOUNT_ALLOW_REGISTRATION %}
+                      <a href="{% url 'account_signup' %}" class="btn btn-outline-primary">{% translate "Sign Up" %}</a>
+                    {% endif %}
+                    <a href="{% url 'account_login' %}" class="btn btn-primary">{% translate "Sign In" %}</a>
+                  </div>
+                {% endif %}
+              </div>
             </div>
-          {% endfor %}
+          </nav>
+        </header>
+        <!-- Mensajes -->
+        {% if messages %}
+          <div class="messages-container">
+            {% for message in messages %}
+              <div class="alert alert-dismissible {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
         {% endif %}
-        {% block main %}
+        <!-- Contenido principal -->
+        <main class="content">
           {% block content %}
-            <p>Use this document as a way to quick start any new project.</p>
           {% endblock content %}
-        {% endblock main %}
+        </main>
+        <!-- Footer -->
+        <footer class="main-footer">
+          <div class="container">
+            <p>copy; {% now "Y" %} StayTrade. {% translate "All rights reserved" %}.</p>
+          </div>
+        </footer>
       </div>
-    {% endblock body %}
-    <!-- /container -->
+    </div>
     {% block modal %}
     {% endblock modal %}
     {% block inline_javascript %}
-      {% comment %}
-    Script tags with only code, no src (defer by default). To run
-    with a "defer" so that you run inline code:
-    <script>
-      window.addEventListener('DOMContentLoaded', () => {
-        /* Run whatever you want */
-      });
-    </script>
-      {% endcomment %}
     {% endblock inline_javascript %}
   </body>
 </html>
