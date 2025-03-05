@@ -14,13 +14,9 @@
       </li>
       {% if request.user.is_provider %}
         <li class="sidebar-menu-item">
-          <a href="{% url 'hotels:list' %}" class="sidebar-menu-link">{% translate "My Hotels" %}</a>
+          <p class="sidebar-menu-link">{% translate "My Hotels" %}</p>
         </li>
       {% endif %}
-      <li class="sidebar-menu-item">
-        <a href="{% url 'users:detail' request.user.username %}"
-           class="sidebar-menu-link">{% translate "My Profile" %}</a>
-      </li>
     </ul>
   </nav>
 </aside>
