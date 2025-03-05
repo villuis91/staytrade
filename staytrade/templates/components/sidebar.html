@@ -12,9 +12,15 @@
       <li class="sidebar-menu-item">
         <a href="{% url 'home' %}" class="sidebar-menu-link">{% translate "Home" %}</a>
       </li>
+      <li class="sidebar-menu-item">
+        <a href="{% url 'home' %}" class="sidebar-menu-link">{% "Search" %}</a>
+      </li>
+      <li class="sidebar-menu-item">
+        <a href="{% url 'home' %}" class="sidebar-menu-link">{% "My bookings" %}</a>
+      </li>
       {% if request.user.is_provider %}
         <li class="sidebar-menu-item">
-          <p class="sidebar-menu-link">{% translate "My Hotels" %}</p>
+          <a href="{% url 'home' %}" class="sidebar-menu-link">{% "My allocations" %}</a>
         </li>
       {% endif %}
     </ul>
