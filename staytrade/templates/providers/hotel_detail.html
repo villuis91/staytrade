@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-0">{{ hotel.name }}</h1>
+            <div class="hotel-stars">
+                {% for i in ""|ljust:hotel.stars %}
+                    <i class="fas fa-star text-warning"></i>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card-body">
+            <!-- Imágenes del hotel -->
+            <div class="row mb-4">
+                {% if hotel.main_picture %}
+                <div class="col-md-8">
+                    <img src="{{ hotel.main_picture.url }}"
+                         alt="{{ hotel.name }}"
+                         class="img-fluid rounded main-image">
+                </div>
+                {% endif %}
+                <div class="col-md-4">
+                    <div class="row">
+                        {% if hotel.second_picture %}
+                        <div class="col-12 mb-2">
+                            <img src="{{ hotel.second_picture.url }}"
+                                 alt="{{ hotel.name }}"
+                                 class="img-fluid rounded">
+                        </div>
+                        {% endif %}
+                        {% if hotel.third_picture %}
+                        <div class="col-12">
+                            <img src="{{ hotel.third_picture.url }}"
+                                 alt="{{ hotel.name }}"
+                                 class="img-fluid rounded">
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información del hotel -->
+            <div class="row">
+                <div class="col-md-8">
+                    <h2 class="h4">{% translate "Descripción" %}</h2>
+                    <p>{{ hotel.description }}</p>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="h5">{% translate "Información de contacto" %}</h3>
+                            {% if hotel.site_url %}
+                            <p>
+                                <i class="fas fa-globe"></i>
+                                <a href="{{ hotel.site_url }}" target="_blank">
+                                    {% translate "Sitio web" %}
+                                </a>
+                            </p>
+                            {% endif %}
+
+                            {% if hotel.google_maps_location %}
+                            <p>
+                                <i class="fas fa-map-marker-alt"></i>
+                                <a href="{{ hotel.google_maps_location }}" target="_blank">
+                                    {% translate "Ver en Google Maps" %}
+                                </a>
+                            </p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metadata -->
+            <div class="mt-4 text-muted">
+                <small>
+                    {% translate "Creado por" %}: {{ hotel.created_by.get_full_name|default:hotel.created_by.username }}
+                    <br>
+                    {% translate "Fecha de creación" %}: {{ hotel.created_at|date:"d/m/Y H:i" }}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Estilos adicionales -->
+<style>
+.main-image {
+    max-height: 400px;
+    width: 100%;
+    object-fit: cover;
+}
+.card img {
+    max-height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+</style>
+{% endblock %}

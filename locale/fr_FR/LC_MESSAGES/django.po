@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-05 14:28+0100\n"
+"POT-Creation-Date: 2025-03-06 18:19+0100\n"
 "Language: fr-FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -135,22 +135,6 @@ msgstr ""
 msgid "Internal notes for hotel management (not visible to guests)."
 msgstr ""
 
-#: staytrade/templates/-base.html:70
-#: staytrade/templates/components/header.html:13
-msgid "My Profile"
-msgstr "Mon Profil"
-
-#: staytrade/templates/-base.html:74
-#: staytrade/templates/components/header.html:14
-msgid "Sign Out"
-msgstr "Se déconnecter"
-
-#: staytrade/templates/-base.html:80
-#: staytrade/templates/components/header.html:19
-msgid "Sign Up"
-msgstr "S'inscrire"
-
-#: staytrade/templates/-base.html:85
 #: staytrade/templates/allauth/layouts/entrance.html:13
 #: staytrade/templates/components/header.html:21
 msgid "Sign In"
@@ -160,8 +144,56 @@ msgstr "S'identifier"
 msgid "All rights reserved"
 msgstr ""
 
+#: staytrade/templates/components/header.html:13
+msgid "My Profile"
+msgstr "Mon Profil"
+
+#: staytrade/templates/components/header.html:14
+msgid "Sign Out"
+msgstr "Se déconnecter"
+
+#: staytrade/templates/components/header.html:19
+msgid "Sign Up"
+msgstr "S'inscrire"
+
 #: staytrade/templates/components/sidebar.html:13
 msgid "Home"
+msgstr ""
+
+#: staytrade/templates/components/sidebar.html:16
+msgid "Search"
+msgstr ""
+
+#: staytrade/templates/components/sidebar.html:19
+msgid "My bookings"
+msgstr ""
+
+#: staytrade/templates/components/sidebar.html:23
+msgid "My allocations"
+msgstr ""
+
+#: staytrade/templates/providers/hotel_wizard_form.html:14
+msgid "Información básica"
+msgstr ""
+
+#: staytrade/templates/providers/hotel_wizard_form.html:17
+msgid "Ubicación"
+msgstr ""
+
+#: staytrade/templates/providers/hotel_wizard_form.html:20
+msgid "Imágenes"
+msgstr ""
+
+#: staytrade/templates/providers/hotel_wizard_form.html:44
+msgid "Anterior"
+msgstr ""
+
+#: staytrade/templates/providers/hotel_wizard_form.html:50
+msgid "Finalizar"
+msgstr ""
+
+#: staytrade/templates/providers/hotel_wizard_form.html:52
+msgid "Siguiente"
 msgstr ""
 
 #: staytrade/users/admin.py:24

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="container">
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {{ wizard.form.as_p }}
+
+        <div class="button-group mt-4">
+            {% if wizard.steps.prev %}
+                <button name="wizard_goto_step"
+                        type="submit"
+                        value="{{ wizard.steps.prev }}"
+                        class="btn btn-secondary">
+                    {% translate "Anterior" %}
+                </button>
+            {% endif %}
+
+            <button type="submit" class="btn btn-primary">
+                {% if wizard.steps.current == wizard.steps.last %}
+                    {% translate "Finalizar" %}
+                {% else %}
+                    {% translate "Siguiente" %}
+                {% endif %}
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
