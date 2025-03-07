@@ -1,0 +1,33 @@
+{% load i18n %}
+
+<form method="post"
+      enctype="multipart/form-data"
+      hx-post="{% url 'providers:hotel_create_wizard' wizard.steps.current|default:"1" %}"
+      hx-target="#wizard-form-container"
+      hx-swap="outerHTML">
+  {% csrf_token %}
+  {{ wizard.management_form }}
+  <div class="form-group">{{ wizard.form.as_p }}</div>
+  <div class="button-group">
+    {% if wizard.steps.prev %}
+      <button name="wizard_goto_step"
+              type="submit"
+              value="{{ wizard.steps.prev }}"
+              class="btn btn-secondary"
+              hx-post="{% url 'providers:hotel_create_wizard' wizard.steps.prev %}"
+              hx-target="#wizard-form-container"
+              hx-swap="outerHTML">{% translate "Anterior" %}</button>
+    {% endif %}
+    <button type="submit"
+            class="btn btn-primary"
+            hx-post="{% url 'providers:hotel_create_wizard' wizard.steps.next|default:"1" %}"
+            hx-target="#wizard-form-container"
+            hx-swap="outerHTML">
+      {% if wizard.steps.current == wizard.steps.last %}
+        {% translate "Finalizar" %}
+      {% else %}
+        {% translate "Siguiente" %}
+      {% endif %}
+    </button>
+  </div>
+</form>

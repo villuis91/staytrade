@@ -20,7 +20,8 @@
       </li>
       {% if request.user.is_provider %}
         <li class="sidebar-menu-item">
-          <a href="{% url 'providers:hotel_create_wizard' %}" class="sidebar-menu-link">{% translate "My allocations" %}</a>
+          <a href="{% url 'providers:hotel_create_wizard_default' %}"
+             class="sidebar-menu-link">{% translate "My allocations" %}</a>
         </li>
       {% endif %}
     </ul>

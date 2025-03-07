@@ -44,6 +44,10 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
         }
         return context
 
+    def get_step_url(self, step):
+        """Genera la URL correcta del paso"""
+        return reverse("hotel_create_wizard", kwargs={"step": step})
+
     def done(self, form_list, form_dict, **kwargs):
         hotel_data = {}
         for form in form_list:
@@ -57,3 +61,19 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
 
         messages.info(self.request, "Hotel creado correctamente.")
         return redirect(reverse("providers:hotel_detail", kwargs={"pk": hotel.pk}))
+
+    def render_next_step(self, form, **kwargs):
+        """Renderiza solo el contenido del formulario si es una solicitud HTMX"""
+        response = super().render_next_step(form, **kwargs)
+        if self.request.headers.get("HX-Request"):
+            response.render()
+            return response
+        return response
+
+    def dispatch(self, request, *args, **kwargs):
+        """Asigna un paso por defecto si no se recibe en la URL"""
+        if "step" not in kwargs:
+            return redirect(
+                reverse("providers:hotel_create_wizard", kwargs={"step": "1"})
+            )
+        return super().dispatch(request, *args, **kwargs)

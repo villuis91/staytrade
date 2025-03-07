@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-03-06 18:19+0100\n"
+"POT-Creation-Date: 2025-03-07 12:10+0100\n"
 "Language: pt-BR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -135,6 +135,18 @@ msgstr ""
 msgid "Internal notes for hotel management (not visible to guests)."
 msgstr ""
 
+#: staytrade/providers/views.py:41
+msgid "Basic info"
+msgstr ""
+
+#: staytrade/providers/views.py:42
+msgid "Location"
+msgstr ""
+
+#: staytrade/providers/views.py:43
+msgid "Images"
+msgstr ""
+
 #: staytrade/templates/allauth/layouts/entrance.html:13
 #: staytrade/templates/components/header.html:21
 msgid "Sign In"
@@ -172,27 +184,39 @@ msgstr ""
 msgid "My allocations"
 msgstr ""
 
-#: staytrade/templates/providers/hotel_wizard_form.html:14
-msgid "Información básica"
+#: staytrade/templates/providers/hotel_detail.html:49
+msgid "Descripción"
 msgstr ""
 
-#: staytrade/templates/providers/hotel_wizard_form.html:17
-msgid "Ubicación"
+#: staytrade/templates/providers/hotel_detail.html:55
+msgid "Información de contacto"
 msgstr ""
 
-#: staytrade/templates/providers/hotel_wizard_form.html:20
-msgid "Imágenes"
+#: staytrade/templates/providers/hotel_detail.html:60
+msgid "Sitio web"
 msgstr ""
 
-#: staytrade/templates/providers/hotel_wizard_form.html:44
+#: staytrade/templates/providers/hotel_detail.html:69
+msgid "Ver en Google Maps"
+msgstr ""
+
+#: staytrade/templates/providers/hotel_detail.html:81
+msgid "Creado por"
+msgstr ""
+
+#: staytrade/templates/providers/hotel_detail.html:83
+msgid "Fecha de creación"
+msgstr ""
+
+#: staytrade/templates/providers/wizards/partials/wizard_form.html:29
 msgid "Anterior"
 msgstr ""
 
-#: staytrade/templates/providers/hotel_wizard_form.html:50
+#: staytrade/templates/providers/wizards/partials/wizard_form.html:39
 msgid "Finalizar"
 msgstr ""
 
-#: staytrade/templates/providers/hotel_wizard_form.html:52
+#: staytrade/templates/providers/wizards/partials/wizard_form.html:41
 msgid "Siguiente"
 msgstr ""
 
