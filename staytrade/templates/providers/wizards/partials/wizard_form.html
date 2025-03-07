@@ -1,10 +1,12 @@
 {% load i18n %}
 
+{% load i18n %}
+
 <form method="post"
       enctype="multipart/form-data"
-      hx-post="{% url 'providers:hotel_create_wizard' wizard.steps.current|default:"1" %}"
+      hx-post="{% url 'providers:hotel_create_wizard' wizard.steps.current %}"
       hx-target="#wizard-form-container"
-      hx-swap="outerHTML">
+      hx-swap="innerHTML">
   {% csrf_token %}
   {{ wizard.management_form }}
   <div class="form-group">{{ wizard.form.as_p }}</div>
@@ -13,16 +15,10 @@
       <button name="wizard_goto_step"
               type="submit"
               value="{{ wizard.steps.prev }}"
-              class="btn btn-secondary"
-              hx-post="{% url 'providers:hotel_create_wizard' wizard.steps.prev %}"
-              hx-target="#wizard-form-container"
-              hx-swap="outerHTML">{% translate "Anterior" %}</button>
+              class="btn btn-secondary">{% translate "Anterior" %}</button>
     {% endif %}
     <button type="submit"
-            class="btn btn-primary"
-            hx-post="{% url 'providers:hotel_create_wizard' wizard.steps.next|default:"1" %}"
-            hx-target="#wizard-form-container"
-            hx-swap="outerHTML">
+            class="btn btn-primary">
       {% if wizard.steps.current == wizard.steps.last %}
         {% translate "Finalizar" %}
       {% else %}

@@ -12,6 +12,7 @@ from staytrade.providers.forms import (
 )
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
+from django.http import HttpResponse
 
 
 class HotelDetailView(LoginRequiredMixin, DetailView):
@@ -53,22 +54,34 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
         for form in form_list:
             hotel_data.update(form.cleaned_data)
 
-        # Filtrar campos que no están en el modelo
         valid_fields = [f.name for f in Hotel._meta.fields]
         filtered_data = {k: v for k, v in hotel_data.items() if k in valid_fields}
 
         hotel = Hotel.objects.create(**filtered_data, created_by=self.request.user)
-
         messages.info(self.request, "Hotel creado correctamente.")
-        return redirect(reverse("providers:hotel_detail", kwargs={"pk": hotel.pk}))
+
+        redirect_url = reverse("providers:hotel_detail", kwargs={"pk": hotel.pk})
+
+        if self.request.headers.get("HX-Request"):
+            response = HttpResponse()
+            response["HX-Redirect"] = redirect_url
+            return response
+
+        return redirect(redirect_url)
 
     def render_next_step(self, form, **kwargs):
         """Renderiza solo el contenido del formulario si es una solicitud HTMX"""
-        response = super().render_next_step(form, **kwargs)
         if self.request.headers.get("HX-Request"):
-            response.render()
-            return response
+            # Cambiar el template para peticiones HTMX
+            self.template_name = "providers/wizards/partials/wizard_form.html"
+        response = super().render_next_step(form, **kwargs)
         return response
+
+    def render(self, form=None, **kwargs):
+        """Maneja el template correcto para peticiones HTMX"""
+        if self.request.headers.get("HX-Request"):
+            self.template_name = "providers/wizards/partials/wizard_form.html"
+        return super().render(form, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
         """Asigna un paso por defecto si no se recibe en la URL"""
