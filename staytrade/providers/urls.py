@@ -1,12 +1,12 @@
 from django.urls import path
-from staytrade.providers.views import HotelCreationWizard, HotelDetailView
+from staytrade.providers.views import HotelCreationWizard, HotelDetailView, HotelListView
 
 app_name = "providers"
 # urls.py
 urlpatterns = [
-    # path("hotels/", views.HotelListView.as_view(), name="hotel_list"),
+    path("hotels/my_hotels", HotelListView.as_view(), name="hotel_list"),
     path(
-        "/hotels/new/",
+        "hotels/new/",
         HotelCreationWizard.as_view(),
         name="hotel_create_wizard_default",
     ),

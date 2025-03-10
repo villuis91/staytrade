@@ -81,6 +81,9 @@ class Hotel(SoftDeletedTimestamped):
         help_text=_("Hotel's third picture"),
     )
 
+    class Meta:
+        unique_together = ("created_by", "name")
+
 
 class RoomType(SoftDeletedTimestamped):
     name = models.CharField(

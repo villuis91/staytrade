@@ -2,9 +2,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from formtools.wizard.views import SessionWizardView
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView, UpdateView
 from django.urls import reverse
-from staytrade.providers.models import Hotel
+from staytrade.providers.models import Hotel, RoomType, Room
 from staytrade.providers.forms import (
     HotelBasicInfoForm,
     HotelLocationForm,
@@ -23,6 +23,25 @@ class HotelDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = self.object.name
+        return context
+
+    # Protects form outer users to view details.
+    def get_queryset(self):
+        return self.model.objects.filter(created_by=self.request.user)
+
+
+class HotelListView(LoginRequiredMixin, ListView):
+    model = Hotel
+    template_name = "providers/hotel_list.html"
+    context_object_name = "hotels"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return self.model.objects.filter(created_by=self.request.user).order_by("name")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = _("Hotel list.")
         return context
 
 
@@ -56,9 +75,13 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
 
         valid_fields = [f.name for f in Hotel._meta.fields]
         filtered_data = {k: v for k, v in hotel_data.items() if k in valid_fields}
+        print(self.request.user.enterprise_account)
+        if self.request.user.enterprise_account:
+            filtered_data.update({"account": self.request.user.enterprise_account})
+            print(filtered_data)
 
         hotel = Hotel.objects.create(**filtered_data, created_by=self.request.user)
-        messages.info(self.request, "Hotel creado correctamente.")
+        messages.info(self.request, _("Hotel created succsefully."))
 
         redirect_url = reverse("providers:hotel_detail", kwargs={"pk": hotel.pk})
 
@@ -90,3 +113,7 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
                 reverse("providers:hotel_create_wizard", kwargs={"step": "1"})
             )
         return super().dispatch(request, *args, **kwargs)
+
+
+class HotelTypeDetilView(LoginRequiredMixin, DetailView):
+    pass

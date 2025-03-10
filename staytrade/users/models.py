@@ -7,6 +7,9 @@ from django.utils.translation import gettext_lazy as _
 class EnterpriseAccount(Model):
     name = CharField(_("Name of User"), blank=True, max_length=255)
 
+    def __str__(self):
+        return self.name
+
 
 class User(AbstractUser):
     """

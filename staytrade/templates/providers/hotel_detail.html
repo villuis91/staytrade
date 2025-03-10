@@ -78,7 +78,7 @@
             <!-- Metadata -->
             <div class="mt-4 text-muted">
                 <small>
-                    {% translate "Creado por" %}: {{ hotel.created_by.get_full_name|default:hotel.created_by.username }}
+                    {% translate "Creado por" %}: {{ hotel.created_by.name|default:hotel.created_by.username }}
                     <br>
                     {% translate "Fecha de creación" %}: {{ hotel.created_at|date:"d/m/Y H:i" }}
                 </small>
