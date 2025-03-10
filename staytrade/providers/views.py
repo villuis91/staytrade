@@ -14,8 +14,10 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import HttpResponse
 
+
 class MyAreaView(LoginRequiredMixin, TemplateView):
     template_name = "providers/providers_area.html"
+
 
 class HotelDetailView(LoginRequiredMixin, DetailView):
     model = Hotel

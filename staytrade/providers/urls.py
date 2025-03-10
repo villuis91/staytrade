@@ -3,12 +3,12 @@ from staytrade.providers.views import (
     HotelCreationWizard,
     HotelDetailView,
     MyHotelListView,
-    MyAreaView
+    MyAreaView,
 )
 
 app_name = "providers"
 urlpatterns = [
-    path("my_area/",  MyAreaView.as_view(), name="my_area"),
+    path("my_area/", MyAreaView.as_view(), name="my_area"),
     path("my_hotels/", MyHotelListView.as_view(), name="my_hotels_list"),
     path(
         "hotels/new/",
