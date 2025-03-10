@@ -46,18 +46,18 @@
             <!-- Información del hotel -->
             <div class="row">
                 <div class="col-md-8">
-                    <h2 class="h4">{% translate "Descripción" %}</h2>
+                    <h2 class="h4">{% translate "Description" %}</h2>
                     <p>{{ hotel.description }}</p>
                 </div>
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body">
-                            <h3 class="h5">{% translate "Información de contacto" %}</h3>
+                            <h3 class="h5">{% translate "Contact:" %}</h3>
                             {% if hotel.site_url %}
                             <p>
                                 <i class="fas fa-globe"></i>
                                 <a href="{{ hotel.site_url }}" target="_blank">
-                                    {% translate "Sitio web" %}
+                                    {% translate "Websit" %}
                                 </a>
                             </p>
                             {% endif %}

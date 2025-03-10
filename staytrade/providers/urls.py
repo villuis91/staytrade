@@ -1,10 +1,15 @@
 from django.urls import path
-from staytrade.providers.views import HotelCreationWizard, HotelDetailView, HotelListView
+from staytrade.providers.views import (
+    HotelCreationWizard,
+    HotelDetailView,
+    MyHotelListView,
+    MyAreaView
+)
 
 app_name = "providers"
-# urls.py
 urlpatterns = [
-    path("hotels/my_hotels", HotelListView.as_view(), name="hotel_list"),
+    path("my_area/",  MyAreaView.as_view(), name="my_area"),
+    path("my_hotels/", MyHotelListView.as_view(), name="my_hotels_list"),
     path(
         "hotels/new/",
         HotelCreationWizard.as_view(),

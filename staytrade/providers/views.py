@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from formtools.wizard.views import SessionWizardView
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
-from django.views.generic import DetailView, ListView, UpdateView
+from django.views.generic import DetailView, ListView, UpdateView, TemplateView
 from django.urls import reverse
 from staytrade.providers.models import Hotel, RoomType, Room
 from staytrade.providers.forms import (
@@ -14,6 +14,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import HttpResponse
 
+class MyAreaView(LoginRequiredMixin, TemplateView):
+    template_name = "providers/providers_area.html"
 
 class HotelDetailView(LoginRequiredMixin, DetailView):
     model = Hotel
@@ -30,9 +32,9 @@ class HotelDetailView(LoginRequiredMixin, DetailView):
         return self.model.objects.filter(created_by=self.request.user)
 
 
-class HotelListView(LoginRequiredMixin, ListView):
+class MyHotelListView(LoginRequiredMixin, ListView):
     model = Hotel
-    template_name = "providers/hotel_list.html"
+    template_name = "providers/my_hotels_list.html"
     context_object_name = "hotels"
     paginate_by = 10
 

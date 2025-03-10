@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div class="content">
+    <h1 class="mb-4">{% translate "Provider Dashboard" %}</h1>
+
+    <div class="provider-areas">
+        <!-- Área de Hoteles -->
+        <div class="provider-area-card"
+             hx-get="{% url 'providers:my_area' %}"
+             hx-trigger="click"
+             hx-target="#main-content"
+             hx-push-url="true">
+            <div class="provider-area-content">
+                <i class="fas fa-hotel fa-3x mb-3"></i>
+                <h2>{% translate "Hotels" %}</h2>
+                <p>{% translate "Manage your hotels information" %}</p>
+            </div>
+        </div>
+
+        <!-- Área de Habitaciones -->
+        <div class="provider-area-card"
+             hx-get="{% url 'providers:my_area' %}"
+             hx-trigger="click"
+             hx-target="#main-content"
+             hx-push-url="true">
+            <div class="provider-area-content">
+                <i class="fas fa-bed fa-3x mb-3"></i>
+                <h2>{% translate "Rooms" %}</h2>
+                <p>{% translate "Manage your rooms and availability" %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
