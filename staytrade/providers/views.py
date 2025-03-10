@@ -20,9 +20,11 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import HttpResponse
 
- # Main area
+
+# Main area
 class MyAreaView(LoginRequiredMixin, TemplateView):
     template_name = "providers/providers_area.html"
+
 
 # Hotel related views
 class HotelDetailView(LoginRequiredMixin, DetailView):
@@ -55,14 +57,14 @@ class MyHotelsListView(LoginRequiredMixin, ListView):
         return context
 
 
-
 class HotelDeleteView(DeleteView):
     model = Hotel
-    success_url = reverse_lazy('providers:my_hotels_list')
+    success_url = reverse_lazy("providers:my_hotels_list")
+
 
 class HotelUpdateView(UpdateView):
     model = Hotel
-    success_url = reverse_lazy('providers:my_hotels_list')
+    success_url = reverse_lazy("providers:my_hotels_list")
 
 
 class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):

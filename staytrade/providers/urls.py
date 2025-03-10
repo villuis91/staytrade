@@ -25,7 +25,6 @@ urlpatterns = [
     ),
     path("hotels/<int:pk>/", HotelDetailView.as_view(), name="hotel_detail"),
     path("hotels/delete/<int:pk>/", HotelDeleteView.as_view(), name="hotel_delete"),
-
     # path(
     #     "hotels/<int:hotel_id>/tipos-habitacion/nuevo/",
     #     views.RoomTypeCreateView.as_view(),
