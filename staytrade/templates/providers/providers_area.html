@@ -7,30 +7,23 @@
 
     <div class="provider-areas">
         <!-- Área de Hoteles -->
-        <div class="provider-area-card"
-             hx-get="{% url 'providers:my_area' %}"
-             hx-trigger="click"
-             hx-target="#main-content"
-             hx-push-url="true">
+        <a href="{% url 'providers:my_hotels_list' %}" class="provider-area-card">
             <div class="provider-area-content">
                 <i class="fas fa-hotel fa-3x mb-3"></i>
                 <h2>{% translate "Hotels" %}</h2>
                 <p>{% translate "Manage your hotels information" %}</p>
             </div>
-        </div>
+        </a>
 
         <!-- Área de Habitaciones -->
-        <div class="provider-area-card"
-             hx-get="{% url 'providers:my_area' %}"
-             hx-trigger="click"
-             hx-target="#main-content"
-             hx-push-url="true">
+        <a href="{% url 'providers:my_area' %}" class="provider-area-card">
             <div class="provider-area-content">
                 <i class="fas fa-bed fa-3x mb-3"></i>
                 <h2>{% translate "Rooms" %}</h2>
                 <p>{% translate "Manage your rooms and availability" %}</p>
             </div>
-        </div>
+        </a>
     </div>
 </div>
+
 {% endblock content %}

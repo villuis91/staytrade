@@ -2,8 +2,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from formtools.wizard.views import SessionWizardView
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
-from django.views.generic import DetailView, ListView, UpdateView, TemplateView
-from django.urls import reverse
+from django.views.generic import (
+    DetailView,
+    ListView,
+    UpdateView,
+    TemplateView,
+    DeleteView,
+)
+from django.urls import reverse, reverse_lazy
 from staytrade.providers.models import Hotel, RoomType, Room
 from staytrade.providers.forms import (
     HotelBasicInfoForm,
@@ -14,11 +20,11 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import HttpResponse
 
-
+ # Main area
 class MyAreaView(LoginRequiredMixin, TemplateView):
     template_name = "providers/providers_area.html"
 
-
+# Hotel related views
 class HotelDetailView(LoginRequiredMixin, DetailView):
     model = Hotel
     template_name = "providers/hotel_detail.html"
@@ -29,14 +35,14 @@ class HotelDetailView(LoginRequiredMixin, DetailView):
         context["title"] = self.object.name
         return context
 
-    # Protects form outer users to view details.
+    # Protects form outter users to view details.
     def get_queryset(self):
         return self.model.objects.filter(created_by=self.request.user)
 
 
-class MyHotelListView(LoginRequiredMixin, ListView):
+class MyHotelsListView(LoginRequiredMixin, ListView):
     model = Hotel
-    template_name = "providers/my_hotels_list.html"
+    template_name = "providers/hotels_list.html"
     context_object_name = "hotels"
     paginate_by = 10
 
@@ -47,6 +53,16 @@ class MyHotelListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["title"] = _("Hotel list.")
         return context
+
+
+
+class HotelDeleteView(DeleteView):
+    model = Hotel
+    success_url = reverse_lazy('providers:my_hotels_list')
+
+class HotelUpdateView(UpdateView):
+    model = Hotel
+    success_url = reverse_lazy('providers:my_hotels_list')
 
 
 class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):

@@ -2,14 +2,17 @@ from django.urls import path
 from staytrade.providers.views import (
     HotelCreationWizard,
     HotelDetailView,
-    MyHotelListView,
+    HotelDeleteView,
+    MyHotelsListView,
     MyAreaView,
 )
 
 app_name = "providers"
 urlpatterns = [
+    # Main area
     path("my_area/", MyAreaView.as_view(), name="my_area"),
-    path("my_hotels/", MyHotelListView.as_view(), name="my_hotels_list"),
+    # Hotels
+    path("my_hotels/", MyHotelsListView.as_view(), name="my_hotels_list"),
     path(
         "hotels/new/",
         HotelCreationWizard.as_view(),
@@ -21,6 +24,8 @@ urlpatterns = [
         name="hotel_create_wizard",
     ),
     path("hotels/<int:pk>/", HotelDetailView.as_view(), name="hotel_detail"),
+    path("hotels/delete/<int:pk>/", HotelDeleteView.as_view(), name="hotel_delete"),
+
     # path(
     #     "hotels/<int:hotel_id>/tipos-habitacion/nuevo/",
     #     views.RoomTypeCreateView.as_view(),

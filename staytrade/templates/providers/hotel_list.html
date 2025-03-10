@@ -1,36 +1,78 @@
-<!-- templates/hotels/hotel_list.html -->
 {% extends 'base.html' %}
 {% load i18n %}
 
 {% block content %}
-    <h1>{{ title }}</h1>
+<div class="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mb-0">{{ title }}</h1>
+        <a href="{% url 'providers:hotel_create_wizard_default' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> {% translate "Add Hotel" %}
+        </a>
+    </div>
 
-    <div class="hotel-list">
+    <div class="hotel-grid">
         {% for hotel in hotels %}
             <div class="hotel-card">
-                <h2>{{ hotel.name }}</h2>
-                <p>Estrellas: {{ hotel.stars }}</p>
-                {% if hotel.main_picture %}
-                    <img src="{{ hotel.main_picture.url }}" alt="{{ hotel.name }}">
-                {% endif %}
-                <p>{{ hotel.description }}</p>
+                <div class="hotel-card-image">
+                    {% if hotel.main_picture %}
+                        <img src="{{ hotel.main_picture.url }}" alt="{{ hotel.name }}">
+                    {% else %}
+                        <div class="no-image">
+                            <i class="fas fa-hotel"></i>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="hotel-card-content">
+                    <div class="hotel-card-header">
+                        <h2>{{ hotel.name }}</h2>
+                        <div class="hotel-stars">
+                            {% for i in ""|ljust:hotel.stars %}
+                                <i class="fas fa-star"></i>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <p class="hotel-description">{{ hotel.description|truncatewords:30 }}</p>
+                    <div class="hotel-card-footer">
+                        <a href="{% url 'providers:hotel_detail' hotel.id %}" class="btn btn-outline-primary">
+                            {% translate "View Details" %}
+                        </a>
+                    </div>
+                </div>
             </div>
         {% empty %}
-            <p>No hay hoteles disponibles.</p>
+            <div class="empty-state">
+                <i class="fas fa-hotel fa-3x mb-3"></i>
+                <p>{% translate "No hotels available." %}</p>
+            </div>
         {% endfor %}
     </div>
 
     {% if is_paginated %}
-        <div class="pagination">
-            {% if page_obj.has_previous %}
-                <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
-            {% endif %}
+        <nav class="pagination-container">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
 
-            <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+                <li class="page-item disabled">
+                    <span class="page-link">
+                        {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
 
-            {% if page_obj.has_next %}
-                <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
-            {% endif %}
-        </div>
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     {% endif %}
+</div>
 {% endblock %}
