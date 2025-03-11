@@ -164,6 +164,15 @@ class RoomType(SoftDeletedTimestamped):
         null=False,
         default=False,
     )
+    internal_notes = models.TextField(
+        blank=True,
+        verbose_name=_("Internal notes"),
+        help_text=_("Internal notes for hotel management (not visible to guests)."),
+    )
+
+    # Date range intersections must be controlled
+    class Meta:
+        unique_together = ("hotel", "name")
 
 
 class RoomTypeAvailability(TimeStampedModel):
@@ -181,11 +190,6 @@ class RoomTypeAvailability(TimeStampedModel):
     end_date = models.DateField(
         null=False,
         blank=False,
-    )
-    internal_notes = models.TextField(
-        blank=True,
-        verbose_name=_("Internal notes"),
-        help_text=_("Internal notes for hotel management (not visible to guests)."),
     )
 
     # Date range intersections must be controlled

@@ -6,6 +6,7 @@ from staytrade.providers.views import (
     HotelUpdateView,
     MyHotelsListView,
     MyAreaView,
+    RoomTypeCreationWizardView,
 )
 
 app_name = "providers"
@@ -27,14 +28,15 @@ urlpatterns = [
     path("hotels/<int:pk>/", HotelDetailView.as_view(), name="hotel_detail"),
     path("hotels/delete/<int:pk>/", HotelDeleteView.as_view(), name="hotel_delete"),
     path("hotels/update/<int:pk>/", HotelUpdateView.as_view(), name="hotel_update"),
-    # path(
-    #     "hotels/<int:hotel_id>/tipos-habitacion/nuevo/",
-    #     views.RoomTypeCreateView.as_view(),
-    #     name="roomtype_create",
-    # ),
-    # path(
-    #     "hotels/<int:hotel_id>/habitaciones/nueva/",
-    #     views.RoomCreateView.as_view(),
-    #     name="room_create",
-    # ),
+    # Room types
+    path(
+        "roomtypes/new/",
+        RoomTypeCreationWizardView.as_view(),
+        name="room_type_create_wizard_default",
+    ),
+    path(
+        "roomtypes/new/<str:step>/",
+        RoomTypeCreationWizardView.as_view(),
+        name="room_type_create_wizard",
+    ),
 ]

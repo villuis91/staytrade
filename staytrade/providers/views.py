@@ -10,11 +10,15 @@ from django.views.generic import (
     DeleteView,
 )
 from django.urls import reverse, reverse_lazy
-from staytrade.providers.models import Hotel, RoomType
+from staytrade.providers.models import Hotel, RoomType, RoomTypeAvailability
 from staytrade.providers.forms import (
     HotelBasicInfoForm,
     HotelLocationForm,
     HotelImagesForm,
+    RoomTypeBasicInfoForm,
+    RoomTypeCapacityForm,
+    RoomTypeImagesForm,
+    RoomTypeAvailabilityForm,
 )
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
@@ -119,10 +123,9 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
 
         valid_fields = [f.name for f in Hotel._meta.fields]
         filtered_data = {k: v for k, v in hotel_data.items() if k in valid_fields}
-        print(self.request.user.enterprise_account)
+
         if self.request.user.enterprise_account:
             filtered_data.update({"account": self.request.user.enterprise_account})
-            print(filtered_data)
 
         hotel = Hotel.objects.create(**filtered_data, created_by=self.request.user)
         messages.info(self.request, _("Hotel created succsefully."))
@@ -140,14 +143,14 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
         """Renderiza solo el contenido del formulario si es una solicitud HTMX"""
         if self.request.headers.get("HX-Request"):
             # Cambiar el template para peticiones HTMX
-            self.template_name = "providers/wizards/partials/wizard_form.html"
+            self.template_name = "providers/wizards/partials/hotel_wizard_form.html"
         response = super().render_next_step(form, **kwargs)
         return response
 
     def render(self, form=None, **kwargs):
         """Maneja el template correcto para peticiones HTMX"""
         if self.request.headers.get("HX-Request"):
-            self.template_name = "providers/wizards/partials/wizard_form.html"
+            self.template_name = "providers/wizards/partials/hotel_wizard_form.html"
         return super().render(form, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
@@ -159,5 +162,67 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class HotelTypeDetailView(LoginRequiredMixin, DetailView):
-    pass
+class RoomTypeCreationWizardView(SessionWizardView):
+    form_list = [
+        ("0", RoomTypeBasicInfoForm),
+        ("1", RoomTypeCapacityForm),
+        ("2", RoomTypeImagesForm),
+        ("3", RoomTypeAvailabilityForm),
+    ]
+    template_name = "providers/wizards/room_type_wizard_form.html"
+    file_storage = FileSystemStorage()
+
+    def get_context_data(self, form, **kwargs):
+        context = super().get_context_data(form=form, **kwargs)
+        context["step_titles"] = {
+            "0": _("Basic info"),
+            "1": _("Capacity"),
+            "2": _("Images"),
+            "3": _("Avalability"),
+        }
+        return context
+
+    def get_step_url(self, step):
+        """Genera la URL correcta del paso"""
+        return reverse("room_type_create_wizard", kwargs={"step": step})
+
+    def done(self, form_list, **kwargs):
+        # Procesar los datos del formulario
+        room_type_data = {}
+        for form in form_list:
+            room_type_data.update(form.cleaned_data)
+
+        # Crear RoomType
+        room_type = RoomType.objects.create(
+            **room_type_data,
+            hotel_id=self.kwargs["hotel_id"],
+            created_by=self.request.user,
+        )
+
+        # Crear RoomTypeAvailability
+        availability_data = form_list[-1].cleaned_data
+        RoomTypeAvailability.objects.create(room_type=room_type, **availability_data)
+
+        return redirect("hotel_detail", pk=self.kwargs["hotel_id"])
+
+    def render_next_step(self, form, **kwargs):
+        """Renderiza solo el contenido del formulario si es una solicitud HTMX"""
+        if self.request.headers.get("HX-Request"):
+            # Cambiar el template para peticiones HTMX
+            self.template_name = "providers/wizards/partials/room_type_wizard_form.html"
+        response = super().render_next_step(form, **kwargs)
+        return response
+
+    def render(self, form=None, **kwargs):
+        """Maneja el template correcto para peticiones HTMX"""
+        if self.request.headers.get("HX-Request"):
+            self.template_name = "providers/wizards/partials/room_type_wizard_form.html"
+        return super().render(form, **kwargs)
+
+    def dispatch(self, request, *args, **kwargs):
+        """Asigna un paso por defecto si no se recibe en la URL"""
+        if "step" not in kwargs:
+            return redirect(
+                reverse("providers:room_type_create_wizard", kwargs={"step": "1"})
+            )
+        return super().dispatch(request, *args, **kwargs)
