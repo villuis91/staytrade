@@ -149,7 +149,7 @@ class RoomType(SoftDeletedTimestamped):
         validators=[MinValueValidator(1)],
         default=1,
     )
-    room_number = models.IntegerField(
+    stock = models.IntegerField(
         verbose_name=_("Number of rooms"),
         help_text=_("Number of rooms of the given room type."),
         validators=[MinValueValidator(1)],
@@ -158,7 +158,7 @@ class RoomType(SoftDeletedTimestamped):
         default=1,
     )
     is_available = models.BooleanField(
-        verbose_name=_("Is available."),
+        verbose_name=_("Is available"),
         help_text=_("Determines if the room type is available to be sold."),
         blank=False,
         null=False,
@@ -184,10 +184,14 @@ class RoomTypeAvailability(TimeStampedModel):
         blank=False,
     )
     start_date = models.DateField(
+        verbose_name=_("Initial date"),
+        help_text=_("Initial date of disponibility period."),
         null=False,
         blank=False,
     )
     end_date = models.DateField(
+        verbose_name=_("Final date"),
+        help_text=_("Final date of disponibility period."),
         null=False,
         blank=False,
     )

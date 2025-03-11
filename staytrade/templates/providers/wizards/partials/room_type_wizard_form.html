@@ -2,7 +2,7 @@
 
 <form method="post"
       enctype="multipart/form-data"
-      hx-post="{% url 'providers:room_type_create_wizard' wizard.steps.current %}"
+      hx-post="{% url 'providers:room_type_create_wizard' hotel_id=hotel_id step=wizard.steps.current %}"
       hx-target="#wizard-form-container"
       hx-swap="innerHTML">
   {% csrf_token %}

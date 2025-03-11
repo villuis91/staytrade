@@ -180,6 +180,7 @@ class RoomTypeCreationWizardView(SessionWizardView):
             "2": _("Images"),
             "3": _("Avalability"),
         }
+        context["hotel_id"] = self.kwargs["hotel_id"]
         return context
 
     def get_step_url(self, step):
@@ -226,3 +227,22 @@ class RoomTypeCreationWizardView(SessionWizardView):
                 reverse("providers:room_type_create_wizard", kwargs={"step": "1"})
             )
         return super().dispatch(request, *args, **kwargs)
+
+class MyRoomTypesListView(LoginRequiredMixin, ListView):
+    model = RoomType
+    template_name = "providers/hotels_list.html"
+    context_object_name = "hotels"
+    paginate_by = 10
+
+    def get_queryset(self):
+        return self.model.objects.filter(created_by=self.request.user).order_by("name")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = _("Roomtypes --nombre hotel-- list.")
+        return context
+
+
+class RoomTypeDeleteView(DeleteView):
+    model = RoomType
+    success_url = reverse_lazy("providers:my_hotels_list")
