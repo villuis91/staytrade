@@ -19,6 +19,7 @@ from staytrade.providers.forms import (
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from django.http import HttpResponse
+from django.contrib.messages.views import SuccessMessageMixin
 
 
 # Main area
@@ -62,9 +63,28 @@ class HotelDeleteView(DeleteView):
     success_url = reverse_lazy("providers:my_hotels_list")
 
 
-class HotelUpdateView(UpdateView):
+class HotelUpdateView(SuccessMessageMixin, UpdateView):
     model = Hotel
-    success_url = reverse_lazy("providers:my_hotels_list")
+    template_name = "providers/hotel_update_form.html"
+    fields = [
+        "name",
+        "stars",
+        "description",
+        "main_picture",
+        "second_picture",
+        "third_picture",
+        "site_url",
+        "google_maps_location",
+    ]
+    success_message = _("Hotel successfully updated.")
+
+    def get_success_url(self):
+        return reverse_lazy("providers:hotel_detail", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = f"Modificar {self.object.name}"
+        return context
 
 
 class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):

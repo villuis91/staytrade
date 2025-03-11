@@ -20,6 +20,9 @@
                             data-bs-target="#addRoomTypeModal">
                         <i class="fas fa-plus"></i> {% translate "Add Room Type" %}
                     </button>
+                      <a href="{% url 'providers:hotel_update' hotel.id %}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> {% translate "Edit Hotel" %}
+    </a>
                     <button class="btn btn-danger"
                             data-bs-toggle="modal"
                             data-bs-target="#deleteHotelModal">
@@ -140,5 +143,4 @@
         </div>
     </div>
 </div>
-
 {% endblock %}
