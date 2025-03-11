@@ -28,3 +28,4 @@ drf-spectacular==0.28.0  # https://github.com/tfranzel/drf-spectacular
 django-soft-delete==1.0.18  # https://pypi.org/project/django-soft-delete/
 # Form tools
 django-formtools==2.5.1
+django-widget-tweaks==1.5.0

@@ -12,7 +12,7 @@ class HotelBasicInfoForm(ModelForm):
 class HotelLocationForm(ModelForm):
     class Meta:
         model = Hotel
-        fields = ["google_maps_location", "site_url"]
+        fields = ["text_location", "contact_phone", "google_maps_location", "site_url"]
 
 
 class HotelImagesForm(ModelForm):

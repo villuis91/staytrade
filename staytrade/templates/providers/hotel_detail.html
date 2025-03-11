@@ -14,21 +14,21 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="action-buttons">
-                    <button class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target="#addRoomTypeModal">
-                        <i class="fas fa-plus"></i> {% translate "Add Room Type" %}
-                    </button>
+                  <div class="action-buttons">
                       <a href="{% url 'providers:hotel_update' hotel.id %}" class="btn btn-warning">
-        <i class="fas fa-edit"></i> {% translate "Edit Hotel" %}
-    </a>
-                    <button class="btn btn-danger"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteHotelModal">
-                        <i class="fas fa-trash"></i> {% translate "Delete Hotel" %}
-                    </button>
-                </div>
+                          <i class="fas fa-edit"></i> {% translate "Edit Hotel" %}
+                      </a>
+                      <button class="btn btn-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target="#addRoomTypeModal">
+                          <i class="fas fa-plus"></i> {% translate "Add Room Type" %}
+                      </button>
+                      <button class="btn btn-danger"
+                              data-bs-toggle="modal"
+                              data-bs-target="#deleteHotelModal">
+                          <i class="fas fa-trash"></i> {% translate "Delete Hotel" %}
+                      </button>
+                  </div>
             </div>
         </div>
 
@@ -66,24 +66,55 @@
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="contact-card">
-                            <h3 class="h5">{% translate "Contact Information" %}</h3>
-                            {% if hotel.site_url %}
-                                <a href="{{ hotel.site_url }}"
-                                   class="contact-link"
-                                   target="_blank">
-                                    <i class="fas fa-globe"></i> {% translate "Website" %}
-                                </a>
-                            {% endif %}
-                            {% if hotel.google_maps_location %}
-                                <a href="{{ hotel.google_maps_location }}"
-                                   class="contact-link"
-                                   target="_blank">
-                                    <i class="fas fa-map-marker-alt"></i> {% translate "View on Maps" %}
-                                </a>
-                            {% endif %}
-                        </div>
-                    </div>
+<div class="contact-card">
+    <h3 class="h5 mb-4">{% translate "Contact Information" %}</h3>
+    <div class="contact-info-list">
+        {% if hotel.site_url %}
+        <div class="contact-item">
+            <div class="contact-icon">
+                <i class="fas fa-globe"></i>
+            </div>
+            <div class="contact-details">
+                <span class="contact-label">{% translate "Website" %}</span>
+                <a href="{{ hotel.site_url }}"
+                   class="contact-value"
+                   target="_blank">
+                    {% translate "Visit website" %}
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if hotel.text_location %}
+        <div class="contact-item">
+            <div class="contact-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="contact-details">
+                <span class="contact-label">{% translate "Location" %}</span>
+                <a href="{{ hotel.google_maps_location }}"
+                   class="contact-value"
+                   target="_blank">
+                    {{ hotel.text_location }}
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if hotel.contact_phone %}
+        <div class="contact-item">
+            <div class="contact-icon">
+                <i class="fas fa-phone"></i>
+            </div>
+            <div class="contact-details">
+                <span class="contact-label">{% translate "Contact phone" %}</span>
+                <span class="contact-value">{{ hotel.contact_phone }}</span>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
                 </div>
             </div>
 
@@ -110,6 +141,7 @@
                 <p>{% translate "Are you sure you want to delete this hotel? This action cannot be undone." %}</p>
             </div>
             <div class="modal-footer">
+
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
                     {% translate "Cancel" %}
                 </button>
@@ -143,4 +175,5 @@
         </div>
     </div>
 </div>
+
 {% endblock %}

@@ -10,7 +10,7 @@ from django.views.generic import (
     DeleteView,
 )
 from django.urls import reverse, reverse_lazy
-from staytrade.providers.models import Hotel, RoomType, Room
+from staytrade.providers.models import Hotel, RoomType
 from staytrade.providers.forms import (
     HotelBasicInfoForm,
     HotelLocationForm,
@@ -75,6 +75,8 @@ class HotelUpdateView(SuccessMessageMixin, UpdateView):
         "third_picture",
         "site_url",
         "google_maps_location",
+        "contact_phone",
+        "text_location",
     ]
     success_message = _("Hotel successfully updated.")
 
@@ -157,5 +159,5 @@ class HotelCreationWizard(LoginRequiredMixin, SessionWizardView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class HotelTypeDetilView(LoginRequiredMixin, DetailView):
+class HotelTypeDetailView(LoginRequiredMixin, DetailView):
     pass

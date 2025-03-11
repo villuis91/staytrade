@@ -52,7 +52,12 @@ class Hotel(SoftDeletedTimestamped):
         null=True,
         blank=True,
     )
-
+    contact_phone = models.PositiveIntegerField(
+        verbose_name="Contact phone number",
+        help_text="Hotel's phone number.",
+        null=True,
+    )
+    text_location = models.CharField(max_length=255)
     # Pictures
     # Consider to use a model linked to Rooms with images +Calls but +elegant
     _upload_destine_root = "hotel-pictures/"
@@ -132,6 +137,33 @@ class RoomType(SoftDeletedTimestamped):
         upload_to=_upload_destine_root,
         help_text=_("Room type's third picture"),
     )
+    adults_capacity = models.PositiveIntegerField(
+        verbose_name=_("Adults Capacity"),
+        help_text=_("Maximum number of adult guests allowed in the room."),
+        validators=[MinValueValidator(1)],
+        default=2,
+    )
+    children_capacity = models.PositiveIntegerField(
+        verbose_name=_("Children Capacity"),
+        help_text=_("Maximum number of children guests allowed in the room."),
+        validators=[MinValueValidator(1)],
+        default=1,
+    )
+    room_number = models.IntegerField(
+        verbose_name=_("Number of rooms"),
+        help_text=_("Number of rooms of the given room type."),
+        validators=[MinValueValidator(1)],
+        null=False,
+        blank=False,
+        default=1,
+    )
+    is_available = models.BooleanField(
+        verbose_name=_("Is available."),
+        help_text=_("Determines if the room type is available to be sold."),
+        blank=False,
+        null=False,
+        default=False,
+    )
 
 
 class RoomTypeAvailability(TimeStampedModel):
@@ -150,76 +182,15 @@ class RoomTypeAvailability(TimeStampedModel):
         null=False,
         blank=False,
     )
-
-    # Date range intersections must be controlled
-    class Meta:
-        unique_together = ("room_type", "start_date", "end_date")
-
-
-class Room(SoftDeletedTimestamped):
-    class RoomStatus(models.TextChoices):
-        AVAILABLE = "available", _("Available")
-        OCCUPIED = "occupied", _("Occupied")
-
-    room_type = models.ForeignKey(
-        RoomType,
-        on_delete=models.DO_NOTHING,
-        null=False,
-        blank=False,
-    )
-    name_or_number = models.CharField(
-        max_length=255,
-        verbose_name=_("Room name or number."),
-        help_text=_("Name or number of the room."),
-        null=False,
-        blank=False,
-    )
-    adults_capacity = models.PositiveIntegerField(
-        verbose_name=_("Adults Capacity"),
-        help_text=_("Maximum number of adult guests allowed in the room."),
-        validators=[MinValueValidator(1)],
-    )
-    children_capacity = models.PositiveIntegerField(
-        verbose_name=_("Children Capacity"),
-        help_text=_("Maximum number of children guests allowed in the room."),
-        validators=[MinValueValidator(1)],
-    )
-    status = models.CharField(
-        max_length=15,
-        choices=RoomStatus.choices,
-        default=RoomStatus.AVAILABLE,
-        verbose_name=_("Room status"),
-        null=False,
-        blank=False,
-    )
     internal_notes = models.TextField(
         blank=True,
-        null=True,
         verbose_name=_("Internal notes"),
         help_text=_("Internal notes for hotel management (not visible to guests)."),
     )
 
-
-class RoomAvailability(TimeStampedModel):
-    room = models.ForeignKey(
-        Room, on_delete=models.CASCADE, related_name="availabilities"
-    )
-    start_date = models.DateField(
-        null=False,
-        blank=False,
-    )
-    end_date = models.DateField(
-        null=False,
-        blank=False,
-    )
-    is_available = models.BooleanField(
-        default=True,
-        null=False,
-        blank=False,
-    )
-
+    # Date range intersections must be controlled
     class Meta:
-        unique_together = ("room", "start_date", "end_date")
+        unique_together = ("room_type", "start_date", "end_date")
 
 
 class RoomNight(SoftDeletedTimestamped):
@@ -239,8 +210,8 @@ class RoomNight(SoftDeletedTimestamped):
         null=False,
         blank=False,
     )
-    room = models.ForeignKey(
-        Room,
+    room_type = models.ForeignKey(
+        RoomType,
         on_delete=models.DO_NOTHING,
         null=False,
         blank=False,

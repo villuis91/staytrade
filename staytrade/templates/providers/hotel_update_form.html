@@ -1,41 +1,105 @@
 {% extends "base.html" %}
 {% load i18n %}
+{% load widget_tweaks %}
 
 {% block content %}
 <div class="content">
     <div class="card">
         <div class="card-header">
-            <h1 class="h3 mb-0">{{ title }}</h1>
+            <h1 class="h3 mb-0">{% translate "Edit Hotel" %}: {{ hotel.name }}</h1>
         </div>
+
         <div class="card-body">
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                {% for field in form %}
-                <div class="mb-3">
-                    <label for="{{ field.id_for_label }}" class="form-label">
-                        {{ field.label }}
-                    </label>
-                    {{ field }}
-                    {% if field.help_text %}
-                        <div class="form-text">{{ field.help_text }}</div>
-                    {% endif %}
-                    {% if field.errors %}
-                        <div class="invalid-feedback d-block">
-                            {{ field.errors }}
+                <!-- Información básica -->
+                <div class="mb-4">
+                    <h4>{% translate "Basic Information" %}</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.name.id_for_label }}" class="form-label">{% translate "Hotel Name" %} *</label>
+                            {{ form.name|add_class:"form-control" }}
+                            {{ form.name.errors }}
                         </div>
-                    {% endif %}
+                        <div class="col-md-6">
+                            <label for="{{ form.stars.id_for_label }}" class="form-label">{% translate "Stars" %} *</label>
+                            {{ form.stars|add_class:"form-control" }}
+                            {{ form.stars.errors }}
+                        </div>
+                        <div class="col-12">
+                            <label for="{{ form.description.id_for_label }}" class="form-label">{% translate "Description" %} *</label>
+                            {{ form.description|add_class:"form-control" }}
+                            {{ form.description.errors }}
+                        </div>
+                    </div>
                 </div>
-                {% endfor %}
 
-                <div class="mt-4">
+                <!-- Información de contacto -->
+                <div class="mb-4">
+                    <h4>{% translate "Contact Information" %}</h4>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="{{ form.contact_phone.id_for_label }}" class="form-label">{% translate "Contact Phone" %}</label>
+                            {{ form.contact_phone|add_class:"form-control" }}
+                            {{ form.contact_phone.errors }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="{{ form.site_url.id_for_label }}" class="form-label">{% translate "Website URL" %}</label>
+                            {{ form.site_url|add_class:"form-control" }}
+                            {{ form.site_url.errors }}
+                        </div>
+                        <div class="col-md-12">
+                            <label for="{{ form.text_location.id_for_label }}" class="form-label">{% translate "Address" %}</label>
+                            {{ form.text_location|add_class:"form-control" }}
+                            {{ form.text_location.errors }}
+                        </div>
+                        <div class="col-md-12">
+                            <label for="{{ form.google_maps_location.id_for_label }}" class="form-label">{% translate "Google Maps URL" %}</label>
+                            {{ form.google_maps_location|add_class:"form-control" }}
+                            {{ form.google_maps_location.errors }}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Imágenes -->
+                <div class="mb-4">
+                    <h4>{% translate "Hotel Images" %}</h4>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label for="{{ form.main_picture.id_for_label }}" class="form-label">{% translate "Main Picture" %}</label>
+                            {% if hotel.main_picture %}
+                                <img src="{{ hotel.main_picture.url }}" class="img-thumbnail mb-2" alt="Main picture">
+                            {% endif %}
+                            {{ form.main_picture|add_class:"form-control" }}
+                            {{ form.main_picture.errors }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.second_picture.id_for_label }}" class="form-label">{% translate "Second Picture" %}</label>
+                            {% if hotel.second_picture %}
+                                <img src="{{ hotel.second_picture.url }}" class="img-thumbnail mb-2" alt="Second picture">
+                            {% endif %}
+                            {{ form.second_picture|add_class:"form-control" }}
+                            {{ form.second_picture.errors }}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="{{ form.third_picture.id_for_label }}" class="form-label">{% translate "Third Picture" %}</label>
+                            {% if hotel.third_picture %}
+                                <img src="{{ hotel.third_picture.url }}" class="img-thumbnail mb-2" alt="Third picture">
+                            {% endif %}
+                            {{ form.third_picture|add_class:"form-control" }}
+                            {{ form.third_picture.errors }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <a href="{% url 'providers:hotel_detail' hotel.id %}" class="btn btn-secondary">
+                        {% translate "Cancel" %}
+                    </a>
                     <button type="submit" class="btn btn-primary">
                         {% translate "Save Changes" %}
                     </button>
-                    <a href="{% url 'providers:hotel_detail' object.id %}"
-                       class="btn btn-secondary">
-                        {% translate "Cancel" %}
-                    </a>
                 </div>
             </form>
         </div>
@@ -43,22 +107,29 @@
 </div>
 
 <style>
-.form-control, .form-select {
-    max-width: 100%;
+.img-thumbnail {
+    max-height: 150px;
+    width: auto;
 }
 
-textarea.form-control {
-    min-height: 150px;
+.form-label {
+    font-weight: 500;
 }
 
-/* Para los campos de imagen */
-input[type="file"] {
-    padding: 0.375rem 0.75rem;
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
-.current-image {
-    max-width: 200px;
-    margin-top: 10px;
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    padding: 1rem;
+}
+
+.content {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
 }
 </style>
 {% endblock %}
