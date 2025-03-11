@@ -1,5 +1,5 @@
 # hotels/forms.py
-from django.forms import ModelForm
+from django.forms import ModelForm, IntegerField, NumberInput
 from .models import Hotel
 
 
@@ -10,6 +10,11 @@ class HotelBasicInfoForm(ModelForm):
 
 
 class HotelLocationForm(ModelForm):
+    stars = IntegerField(
+        min_value=1,
+        max_value=5,
+        widget=NumberInput(attrs={'class': 'form-control'})
+    )
     class Meta:
         model = Hotel
         fields = ["text_location", "contact_phone", "google_maps_location", "site_url"]
