@@ -343,3 +343,26 @@
 .action-buttons {
     gap: 0.5rem;
 }
+.no-image {
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+}
+
+.main-image.no-image {
+    height: 400px;
+}
+
+.no-image i {
+    font-size: 3rem;
+}
+
+.thumb-image.no-image {
+    height: calc((400px - 1rem) / 2);
+}
+
+.thumb-image.no-image i {
+    font-size: 2rem;
+}

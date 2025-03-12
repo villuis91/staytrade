@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>{% trans "Tipos de Habitaciones" %} - {{ title }}</h2>
+
+    <!-- Botón para agregar nuevo tipo de habitación -->
+    <button class="btn btn-primary mb-3"
+            hx-get="{% url 'providers:room_type_create_wizard' hotel_id=hotel_id step=0 %}"
+            hx-target="#roomtype-form-container">
+        {% trans "Agregar Tipo de Habitación" %}
+    </button>
+
+    <!-- Contenedor para el formulario -->
+    <div id="roomtype-form-container"></div>
+
+    <!-- Lista de tipos de habitaciones -->
+    <div class="row" id="roomtypes-list">
+        {% for room in hotels %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                {% if room.main_picture %}
+                    <img src="{{ room.main_picture.url }}" class="card-img-top" alt="{{ room.name }}">
+                {% endif %}
+                <div class="card-body">
+                    <h5 class="card-title">{{ room.name }}</h5>
+                    <p class="card-text">{{ room.description|truncatewords:30 }}</p>
+
+                    <div class="room-details">
+                        <p><i class="fas fa-user"></i> Adultos: {{ room.adults_capacity }}</p>
+                        <p><i class="fas fa-child"></i> Niños: {{ room.children_capacity }}</p>
+                        <p><i class="fas fa-door-closed"></i> Stock: {{ room.stock }}</p>
+                        <p><i class="fas fa-check-circle"></i> Estado:
+                            {% if room.is_available %}
+                                <span class="badge bg-success">Disponible</span>
+                            {% else %}
+                                <span class="badge bg-danger">No Disponible</span>
+                            {% endif %}
+                        </p>
+                    </div>
+
+                    <!-- Botones de acción -->
+                    <div class="btn-group mt-3">
+                        <button class="btn btn-info btn-sm"
+                                hx-get="{% url 'providers:roomtype_detail' pk=room.id %}"
+                                hx-target="#roomtype-detail-modal">
+                            {% trans "Ver Detalles" %}
+                        </button>
+                        <button class="btn btn-warning btn-sm"
+                                hx-get="{% url 'providers:roomtype_update' pk=room.id %}"
+                                hx-target="#roomtype-form-container">
+                            {% trans "Editar" %}
+                        </button>
+                      <button class="btn btn-danger"
+                              data-bs-toggle="modal"
+                              data-bs-target="#deleteRoomModal"
+                              data-room-id="{{ room.id }}">
+                          <i class="fas fa-trash"></i> {% translate "Delete Hotel" %}
+                      </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                {% trans "No hay tipos de habitaciones registrados." %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación -->
+    {% if is_paginated %}
+    <nav aria-label="Page navigation" class="mt-4">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link"
+                   hx-get="?page={{ page_obj.previous_page_number }}"
+                   hx-target="#roomtypes-list">
+                    {% trans "Anterior" %}
+                </a>
+            </li>
+            {% endif %}
+
+            <li class="page-item active">
+                <span class="page-link">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+            </li>
+
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link"
+                   hx-get="?page={{ page_obj.next_page_number }}"
+                   hx-target="#roomtypes-list">
+                    {% trans "Siguiente" %}
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+
+<!-- Modal para detalles -->
+<div class="modal fade" id="roomtype-detail-modal" tabindex="-1">
+</div>
+
+
+<!-- Modal para confirmar eliminación -->
+<div class="modal fade" id="deleteRoomModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% translate "Confirmar Eliminación" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% translate "¿Está seguro de que desea eliminar esta habitación? Esta acción no se puede deshacer." %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% translate "Cancelar" %}
+                </button>
+                <form method="post" id="deleteRoomForm" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        {% translate "Eliminar" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .room-details p {
+        margin-bottom: 0.5rem;
+    }
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .card-img-top {
+        height: 200px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteModal = document.getElementById('deleteRoomModal');
+
+    deleteModal.addEventListener('show.bs.modal', function(event) {
+        const button = event.relatedTarget;
+        const roomId = button.getAttribute('data-room-id');
+        const form = deleteModal.querySelector('#deleteRoomForm');
+        form.action = `/providers/roomtypes/delete/${roomId}/`;  // URL explícita
+    });
+
+    const deleteForm = document.getElementById('deleteRoomForm');
+    deleteForm.addEventListener('submit', function() {
+        const modal = bootstrap.Modal.getInstance(deleteModal);
+        modal.hide();
+    });
+});
+</script>
+{% endblock %}

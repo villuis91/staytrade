@@ -32,11 +32,16 @@
                         </div>
                     </div>
                     <p class="hotel-description">{{ hotel.description|truncatewords:30 }}</p>
-                    <div class="hotel-card-footer">
-                        <a href="{% url 'providers:hotel_detail' hotel.id %}" class="btn btn-outline-primary">
-                            {% translate "View Details" %}
-                        </a>
-                    </div>
+                  <div class="hotel-card-footer">
+                      <div class="d-flex justify-content-between w-100">
+                          <a href="{% url 'providers:hotel_detail' hotel.id %}" class="btn btn-outline-primary">
+                              {% translate "View Details" %}
+                          </a>
+                          <a href="{% url 'providers:my_hotel_rooms_list' hotel_id=hotel.id %}" class="btn btn-outline-secondary">
+                              {% translate "Manage Rooms" %}
+                          </a>
+                      </div>
+                  </div>
                 </div>
             </div>
         {% empty %}
@@ -75,4 +80,13 @@
         </nav>
     {% endif %}
 </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hotel-card-footer .btn-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+</style>
 {% endblock %}

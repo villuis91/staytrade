@@ -22,8 +22,8 @@
     <a href="{% url 'providers:hotel_update' hotel.id %}" class="btn btn-warning">
         <i class="fas fa-edit"></i> {% translate "Edit Hotel" %}
     </a>
-    <a href="{% url 'providers:room_type_create_wizard' hotel_id=hotel.id step=1 %}" class="btn btn-primary">
-        <i class="fas fa-add"></i> {% translate "Add room type" %}
+    <a href="{% url 'providers:my_hotel_rooms_list' hotel_id=hotel.id %}" class="btn btn-primary">
+        <i class="fas fa-add"></i> {% translate "Manage rooms" %}
     </a>
     <button class="btn btn-danger"
             data-bs-toggle="modal"

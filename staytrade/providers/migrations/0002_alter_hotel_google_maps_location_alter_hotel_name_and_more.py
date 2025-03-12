@@ -6,28 +6,42 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('providers', '0001_initial'),
+        ("providers", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='hotel',
-            name='google_maps_location',
-            field=models.URLField(blank=True, help_text='Google maps location link', null=True, verbose_name='Google maps url.'),
+            model_name="hotel",
+            name="google_maps_location",
+            field=models.URLField(
+                blank=True,
+                help_text="Google maps location link",
+                null=True,
+                verbose_name="Google maps url.",
+            ),
         ),
         migrations.AlterField(
-            model_name='hotel',
-            name='name',
-            field=models.CharField(help_text='', max_length=255, verbose_name=''),
+            model_name="hotel",
+            name="name",
+            field=models.CharField(help_text="", max_length=255, verbose_name=""),
         ),
         migrations.AlterField(
-            model_name='hotel',
-            name='site_url',
-            field=models.URLField(blank=True, help_text='Your allocation website.', null=True, verbose_name='Site url.'),
+            model_name="hotel",
+            name="site_url",
+            field=models.URLField(
+                blank=True,
+                help_text="Your allocation website.",
+                null=True,
+                verbose_name="Site url.",
+            ),
         ),
         migrations.AlterField(
-            model_name='hotel',
-            name='text_location',
-            field=models.CharField(help_text='The public location text', max_length=255, verbose_name='Location'),
+            model_name="hotel",
+            name="text_location",
+            field=models.CharField(
+                help_text="The public location text",
+                max_length=255,
+                verbose_name="Location",
+            ),
         ),
     ]

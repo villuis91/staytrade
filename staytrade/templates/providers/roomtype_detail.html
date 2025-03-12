@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    <div class="container">
+        <!-- Galería de Imágenes -->
+        <div class="hotel-gallery mb-4">
+            <div class="gallery-main">
+                {% if room_type.main_picture %}
+                    <img
+                        src="{{ room_type.main_picture.url }}"
+                        alt="{{ room_type.name }}"
+                        class="main-image"
+                        id="mainImage">
+                {% else %}
+                    <div class="main-image no-image">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="gallery-thumbs">
+                {% if room_type.secondary_picture %}
+                    <img
+                        src="{{ room_type.secondary_picture.url }}"
+                        class="thumb-image"
+                        onclick="document.getElementById('mainImage').src = this.src">
+                {% endif %}
+                {% if room_type.third_picture %}
+                    <img
+                        src="{{ room_type.third_picture.url }}"
+                        class="thumb-image"
+                        onclick="document.getElementById('mainImage').src = this.src">
+                {% endif %}
+                {% if not room_type.secondary_picture and not room_type.third_picture %}
+                    <div class="thumb-image no-image">
+                        <i class="fas fa-image"></i>
+                    </div>
+                    <div class="thumb-image no-image">
+                        <i class="fas fa-image"></i>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Información Principal -->
+        <div class="row">
+            <div class="col-md-8">
+                <div class="info-section">
+                    <h1>{{ room_type.name|default:"Sin nombre" }}</h1>
+                    <div class="hotel-stars">
+                        <i class="fas fa-user"></i> {{ room_type.adults_capacity|default:"0" }} adultos
+                        <i class="fas fa-child"></i> {{ room_type.children_capacity|default:"0" }} niños
+                    </div>
+                    <p class="mt-3">{{ room_type.description|default:"Sin descripción"|linebreaksbr }}</p>
+                </div>
+
+                <!-- Estado y Disponibilidad -->
+                <div class="contact-card mb-4">
+                    <div class="contact-info-list">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                            <div class="contact-details">
+                                <span class="contact-label">Habitaciones disponibles</span>
+                                <span class="contact-value">{{ room_type.stock|default:"0" }}</span>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas {% if room_type.is_available %}fa-check-circle{% else %}fa-times-circle{% endif %}"></i>
+                            </div>
+                            <div class="contact-details">
+                                <span class="contact-label">Estado</span>
+                                <span class="contact-value">
+                                    {% if room_type.is_available %}Disponible{% else %}No disponible{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if room_type.internal_notes %}
+                <div class="contact-card mb-4">
+                    <h4>Notas internas</h4>
+                    <p class="mb-0">{{ room_type.internal_notes|linebreaksbr }}</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Panel Lateral -->
+            <div class="col-md-4">
+                <div class="contact-card">
+                    <h3>Detalles del hotel</h3>
+                    <div class="contact-info-list">
+                        <div class="contact-item">
+                            <div class="contact-icon">
+                                <i class="fas fa-hotel"></i>
+                            </div>
+                            <div class="contact-details">
+                                <span class="contact-label">Hotel</span>
+                                <a href="{% url 'providers:hotel_detail' room_type.hotel.id %}" class="contact-value">
+                                    {{ room_type.hotel.name|default:"Hotel sin nombre" }}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="action-buttons mt-4">
+                        {% if user.is_staff or user == room_type.created_by %}
+                        <a
+                            href="{% url 'providers:roomtype_update' room_type.id %}"
+                            class="btn btn-primary w-100">
+                            Editar
+                        </a>
+                        <button
+                            class="btn btn-danger w-100 mt-2"
+                            hx-delete="{% url 'providers:roomtype_delete' room_type.id %}"
+                            hx-confirm="¿Está seguro de eliminar este tipo de habitación?"
+                            hx-push-url="true"
+                            hx-target="body">
+                            Eliminar
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

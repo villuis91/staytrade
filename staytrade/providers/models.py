@@ -61,7 +61,11 @@ class Hotel(SoftDeletedTimestamped):
         help_text="Hotel's phone number.",
         null=True,
     )
-    text_location = models.CharField(verbose_name=_("Location"), help_text=_("The public location text"), max_length=255)
+    text_location = models.CharField(
+        verbose_name=_("Location"),
+        help_text=_("The public location text"),
+        max_length=255,
+    )
     # Pictures
     # Consider to use a model linked to Rooms with images +Calls but +elegant
     _upload_destine_root = "hotel-pictures/"

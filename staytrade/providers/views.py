@@ -62,12 +62,12 @@ class MyHotelsListView(LoginRequiredMixin, ListView):
         return context
 
 
-class HotelDeleteView(DeleteView):
+class HotelDeleteView(LoginRequiredMixin, DeleteView):
     model = Hotel
     success_url = reverse_lazy("providers:my_hotels_list")
 
 
-class HotelUpdateView(SuccessMessageMixin, UpdateView):
+class HotelUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Hotel
     template_name = "providers/hotel_update_form.html"
     fields = [
@@ -190,7 +190,7 @@ class RoomTypeCreationWizardView(SessionWizardView):
     def done(self, form_list, **kwargs):
         # Procesar los datos del formulario
         room_type_data = {}
-        for form in form_list:
+        for form in form_list[:-1]:
             room_type_data.update(form.cleaned_data)
 
         # Crear RoomType
@@ -201,10 +201,15 @@ class RoomTypeCreationWizardView(SessionWizardView):
         )
 
         # Crear RoomTypeAvailability
-        availability_data = form_list[-1].cleaned_data
-        RoomTypeAvailability.objects.create(room_type=room_type, **availability_data)
-
-        return redirect("hotel_detail", pk=self.kwargs["hotel_id"])
+        # TODO: Implement when defined
+        # availability_data = form_list[-1].cleaned_data
+        # RoomTypeAvailability.objects.create(room_type=room_type, **availability_data)
+        # HTMX response
+        response = HttpResponse()
+        response["HX-Redirect"] = reverse(
+            "providers:hotel_detail", kwargs={"pk": self.kwargs["hotel_id"]}
+        )
+        return response
 
     def render_next_step(self, form, **kwargs):
         """Renderiza solo el contenido del formulario si es una solicitud HTMX"""
@@ -228,21 +233,66 @@ class RoomTypeCreationWizardView(SessionWizardView):
             )
         return super().dispatch(request, *args, **kwargs)
 
-class MyRoomTypesListView(LoginRequiredMixin, ListView):
+
+class MyHotelRoomsListView(LoginRequiredMixin, ListView):
     model = RoomType
-    template_name = "providers/hotels_list.html"
+    template_name = "providers/roomtypes_list.html"
     context_object_name = "hotels"
-    paginate_by = 10
+    paginate_by = 4
 
     def get_queryset(self):
-        return self.model.objects.filter(created_by=self.request.user).order_by("name")
+        return self.model.objects.filter(
+            created_by=self.request.user, hotel=self.kwargs["hotel_id"]
+        ).order_by("name")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = _("Roomtypes --nombre hotel-- list.")
+        context["hotel_id"] = self.kwargs["hotel_id"]
+        context["title"] = _("Roomtypes.")
         return context
 
 
-class RoomTypeDeleteView(DeleteView):
+class RoomTypeDeleteView(LoginRequiredMixin, DeleteView):
     model = RoomType
-    success_url = reverse_lazy("providers:my_hotels_list")
+    success_url = reverse_lazy("providers:my_hotel_rooms_list")
+
+
+class RoomTypeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = RoomType
+    template_name = "providers/hotel_update_form.html"
+    fields = [
+        "name",
+        "description",
+        "main_picture",
+        "second_picture",
+        "third_picture",
+        "adults_capacity",
+        "children_capacity",
+        "stock",
+        "is_available",
+        "internal_notes",
+    ]
+    success_message = _("Room successfully updated.")
+
+    def get_success_url(self):
+        return reverse_lazy("providers:roomtype_detail", kwargs={"pk": self.object.pk})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = f"Modificar {self.object.name}"
+        return context
+
+
+class RoomTypeDetailView(LoginRequiredMixin, DetailView):
+    model = RoomType
+    template_name = "providers/roomtype_detail.html"
+    context_object_name = "room_type"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.object.name
+        return context
+
+    # Protects form outter users to view details.
+    def get_queryset(self):
+        return self.model.objects.filter(created_by=self.request.user)
