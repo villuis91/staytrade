@@ -1,101 +1,118 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
 {% load i18n %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>{% trans "Tipos de Habitaciones" %} - {{ title }}</h2>
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>{% trans "Tipos de Habitaciones" %}</h2>
+        {% if hotel_id %}
+        <a href="{% url 'providers:room_type_create_wizard' hotel_id=hotel_id step=0 %}"
+           class="btn btn-primary">
+            <i class="fas fa-plus"></i> {% trans "Agregar Tipo de Habitación" %}
+        </a>
+        {% endif %}
+    </div>
 
-    <!-- Botón para agregar nuevo tipo de habitación -->
-    <button class="btn btn-primary mb-3"
-            hx-get="{% url 'providers:room_type_create_wizard' hotel_id=hotel_id step=0 %}"
-            hx-target="#roomtype-form-container">
-        {% trans "Agregar Tipo de Habitación" %}
-    </button>
-
-    <!-- Contenedor para el formulario -->
-    <div id="roomtype-form-container"></div>
-
-    <!-- Lista de tipos de habitaciones -->
-    <div class="row" id="roomtypes-list">
-        {% for room in hotels %}
-        <div class="col-md-6 mb-4">
-            <div class="card">
-                {% if room.main_picture %}
-                    <img src="{{ room.main_picture.url }}" class="card-img-top" alt="{{ room.name }}">
+    <div class="row">
+        {% for room_type in object_list %}
+        <div class="col-md-6 col-lg-4 mb-4">
+            <div class="card h-100">
+                {% if room_type.main_picture %}
+                    <img src="{{ room_type.main_picture.url }}"
+                         class="card-img-top"
+                         alt="{{ room_type.name }}"
+                         style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                         style="height: 200px;">
+                        <i class="fas fa-bed fa-3x text-secondary"></i>
+                    </div>
                 {% endif %}
-                <div class="card-body">
-                    <h5 class="card-title">{{ room.name }}</h5>
-                    <p class="card-text">{{ room.description|truncatewords:30 }}</p>
 
-                    <div class="room-details">
-                        <p><i class="fas fa-user"></i> Adultos: {{ room.adults_capacity }}</p>
-                        <p><i class="fas fa-child"></i> Niños: {{ room.children_capacity }}</p>
-                        <p><i class="fas fa-door-closed"></i> Stock: {{ room.stock }}</p>
-                        <p><i class="fas fa-check-circle"></i> Estado:
-                            {% if room.is_available %}
-                                <span class="badge bg-success">Disponible</span>
+                <div class="card-body">
+                    <h5 class="card-title">{{ room_type.name }}</h5>
+
+                    <div class="room-info mb-3">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>
+                                <i class="fas fa-user"></i> {{ room_type.adults_capacity }}
+                                <i class="fas fa-child ms-2"></i> {{ room_type.children_capacity }}
+                            </span>
+                            <span>
+                                <i class="fas fa-door-closed"></i> {{ room_type.stock }}
+                            </span>
+                        </div>
+
+                        <div class="status-badge">
+                            {% if room_type.is_available %}
+                                <span class="badge bg-success">
+                                    <i class="fas fa-check"></i> {% trans "Disponible" %}
+                                </span>
                             {% else %}
-                                <span class="badge bg-danger">No Disponible</span>
+                                <span class="badge bg-danger">
+                                    <i class="fas fa-times"></i> {% trans "No Disponible" %}
+                                </span>
                             {% endif %}
-                        </p>
+                        </div>
                     </div>
 
-                    <!-- Botones de acción -->
-                    <div class="btn-group mt-3">
-                        <button class="btn btn-info btn-sm"
-                                hx-get="{% url 'providers:roomtype_detail' pk=room.id %}"
-                                hx-target="#roomtype-detail-modal">
-                            {% trans "Ver Detalles" %}
-                        </button>
-                        <button class="btn btn-warning btn-sm"
-                                hx-get="{% url 'providers:roomtype_update' pk=room.id %}"
-                                hx-target="#roomtype-form-container">
-                            {% trans "Editar" %}
-                        </button>
-                      <button class="btn btn-danger"
-                              data-bs-toggle="modal"
-                              data-bs-target="#deleteRoomModal"
-                              data-room-id="{{ room.id }}">
-                          <i class="fas fa-trash"></i> {% translate "Delete Hotel" %}
-                      </button>
+                    <p class="card-text text-muted">
+                        {{ room_type.description|truncatewords:20 }}
+                    </p>
+                </div>
+
+                <div class="card-footer bg-transparent border-top-0">
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'providers:roomtype_detail' room_type.id %}"
+                           class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye"></i> {% trans "Ver Detalles" %}
+                        </a>
+                        <a href="{% url 'providers:roomtype_update' room_type.id %}"
+                           class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-edit"></i> {% trans "Editar" %}
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
         {% empty %}
         <div class="col-12">
-            <div class="alert alert-info">
+            <div class="alert alert-info text-center">
+                <i class="fas fa-info-circle me-2"></i>
                 {% trans "No hay tipos de habitaciones registrados." %}
             </div>
         </div>
         {% endfor %}
     </div>
 
-    <!-- Paginación -->
     {% if is_paginated %}
-    <nav aria-label="Page navigation" class="mt-4">
+    <nav aria-label="{% trans 'Navegación de páginas' %}" class="mt-4">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
             <li class="page-item">
-                <a class="page-link"
-                   hx-get="?page={{ page_obj.previous_page_number }}"
-                   hx-target="#roomtypes-list">
-                    {% trans "Anterior" %}
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                    <i class="fas fa-chevron-left"></i>
                 </a>
             </li>
             {% endif %}
 
-            <li class="page-item active">
-                <span class="page-link">{{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
-            </li>
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <li class="page-item active">
+                        <span class="page-link">{{ num }}</span>
+                    </li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
 
             {% if page_obj.has_next %}
             <li class="page-item">
-                <a class="page-link"
-                   hx-get="?page={{ page_obj.next_page_number }}"
-                   hx-target="#roomtypes-list">
-                    {% trans "Siguiente" %}
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                    <i class="fas fa-chevron-right"></i>
                 </a>
             </li>
             {% endif %}
@@ -103,72 +120,35 @@
     </nav>
     {% endif %}
 </div>
-
-<!-- Modal para detalles -->
-<div class="modal fade" id="roomtype-detail-modal" tabindex="-1">
-</div>
-
-
-<!-- Modal para confirmar eliminación -->
-<div class="modal fade" id="deleteRoomModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{% translate "Confirmar Eliminación" %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>{% translate "¿Está seguro de que desea eliminar esta habitación? Esta acción no se puede deshacer." %}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% translate "Cancelar" %}
-                </button>
-                <form method="post" id="deleteRoomForm" class="d-inline">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">
-                        {% translate "Eliminar" %}
-                    </button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
 {% endblock %}
 
 {% block extra_css %}
 <style>
-    .room-details p {
-        margin-bottom: 0.5rem;
-    }
     .card {
+        transition: transform 0.2s;
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .card-img-top {
-        height: 200px;
-        object-fit: cover;
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .room-info {
+        font-size: 0.9rem;
+    }
+
+    .status-badge {
+        text-align: right;
+    }
+
+    .card-footer {
+        padding-top: 1rem;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
     }
 </style>
-{% endblock %}
-
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const deleteModal = document.getElementById('deleteRoomModal');
-
-    deleteModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
-        const roomId = button.getAttribute('data-room-id');
-        const form = deleteModal.querySelector('#deleteRoomForm');
-        form.action = `/providers/roomtypes/delete/${roomId}/`;  // URL explícita
-    });
-
-    const deleteForm = document.getElementById('deleteRoomForm');
-    deleteForm.addEventListener('submit', function() {
-        const modal = bootstrap.Modal.getInstance(deleteModal);
-        modal.hide();
-    });
-});
-</script>
 {% endblock %}

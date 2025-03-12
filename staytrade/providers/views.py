@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from formtools.wizard.views import SessionWizardView
 from django.core.files.storage import FileSystemStorage
 from django.shortcuts import redirect
@@ -22,8 +21,11 @@ from staytrade.providers.forms import (
 )
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
-from django.http import HttpResponse
 from django.contrib.messages.views import SuccessMessageMixin
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Main area
@@ -252,34 +254,50 @@ class MyHotelRoomsListView(LoginRequiredMixin, ListView):
         return context
 
 
+@method_decorator(csrf_exempt, name="dispatch")
 class RoomTypeDeleteView(LoginRequiredMixin, DeleteView):
     model = RoomType
-    success_url = reverse_lazy("providers:my_hotel_rooms_list")
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "providers:my_hotel_rooms_list", kwargs={"hotel_id": self.object.hotel.id}
+        )
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+
+        if request.headers.get("HX-Request"):
+            response = HttpResponse()
+            response["HX-Redirect"] = success_url
+            return response
+
+        return HttpResponseRedirect(success_url)
 
 
-class RoomTypeUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+class RoomTypeUpdateView(LoginRequiredMixin, UpdateView):
     model = RoomType
-    template_name = "providers/hotel_update_form.html"
+    template_name = "providers/roomtype_update.html"
     fields = [
         "name",
         "description",
-        "main_picture",
-        "second_picture",
-        "third_picture",
         "adults_capacity",
         "children_capacity",
         "stock",
         "is_available",
+        "main_picture",
+        "secondary_picture",
+        "third_picture",
         "internal_notes",
     ]
-    success_message = _("Room successfully updated.")
 
     def get_success_url(self):
         return reverse_lazy("providers:roomtype_detail", kwargs={"pk": self.object.pk})
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = f"Modificar {self.object.name}"
+        context["title"] = "Editar Tipo de Habitación"
         return context
 
 

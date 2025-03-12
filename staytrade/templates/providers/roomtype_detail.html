@@ -115,14 +115,13 @@
                             class="btn btn-primary w-100">
                             Editar
                         </a>
-                        <button
-                            class="btn btn-danger w-100 mt-2"
-                            hx-delete="{% url 'providers:roomtype_delete' room_type.id %}"
-                            hx-confirm="¿Está seguro de eliminar este tipo de habitación?"
-                            hx-push-url="true"
-                            hx-target="body">
-                            Eliminar
-                        </button>
+                          <button class="btn btn-danger"
+                                  hx-delete="{% url 'providers:roomtype_delete' pk=room_type.id %}"
+                                  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                  hx-confirm="¿Está seguro que desea eliminar este tipo de habitación?"
+                                  hx-target="body">
+                              <i class="fas fa-trash"></i> Eliminar
+                          </button>
                         {% endif %}
                     </div>
                 </div>
