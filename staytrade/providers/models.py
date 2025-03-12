@@ -154,7 +154,7 @@ class RoomType(SoftDeletedTimestamped):
     children_capacity = models.PositiveIntegerField(
         verbose_name=_("Children Capacity"),
         help_text=_("Maximum number of children guests allowed in the room."),
-        validators=[MinValueValidator(1)],
+        validators=[MinValueValidator(0)],
         default=1,
     )
     stock = models.IntegerField(

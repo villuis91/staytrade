@@ -209,7 +209,7 @@ class RoomTypeCreationWizardView(SessionWizardView):
         # HTMX response
         response = HttpResponse()
         response["HX-Redirect"] = reverse(
-            "providers:hotel_detail", kwargs={"pk": self.kwargs["hotel_id"]}
+            "providers:my_hotel_rooms_list", kwargs={"hotel_id": self.kwargs["hotel_id"]}
         )
         return response
 

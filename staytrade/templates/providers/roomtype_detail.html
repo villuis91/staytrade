@@ -106,25 +106,24 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Botones de Acción -->
-                    <div class="action-buttons mt-4">
-                        {% if user.is_staff or user == room_type.created_by %}
-                        <a
-                            href="{% url 'providers:roomtype_update' room_type.id %}"
-                            class="btn btn-primary w-100">
-                            Editar
-                        </a>
-                          <button class="btn btn-danger"
-                                  hx-delete="{% url 'providers:roomtype_delete' pk=room_type.id %}"
-                                  hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                                  hx-confirm="¿Está seguro que desea eliminar este tipo de habitación?"
-                                  hx-target="body">
-                              <i class="fas fa-trash"></i> Eliminar
-                          </button>
-                        {% endif %}
-                    </div>
-                </div>
+                  </div>
+                  <!-- Botones de Acción -->
+                  <div class="action-buttons mt-4">
+                      {% if user.is_staff or user == room_type.created_by %}
+                      <a
+                          href="{% url 'providers:roomtype_update' room_type.id %}"
+                          class="btn btn-primary w-100">
+                          Editar
+                      </a>
+                        <button class="btn btn-danger"
+                                hx-delete="{% url 'providers:roomtype_delete' pk=room_type.id %}"
+                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                hx-confirm="¿Está seguro que desea eliminar este tipo de habitación?"
+                                hx-target="body">
+                            <i class="fas fa-trash"></i> Eliminar
+                        </button>
+                      {% endif %}
+                  </div>
             </div>
         </div>
     </div>
