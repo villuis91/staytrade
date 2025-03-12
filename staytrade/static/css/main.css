@@ -327,16 +327,19 @@
     color: var(--primary-color);
 }
 
-    .hotel-stars {
-        margin-top: 0.5rem;
-    }
-    .hotel-stars i {
-        font-size: 1.2rem;
-        margin-right: 0.2rem;
-    }
-    .fas.fa-star {
-        color: #ffc107;
-    }
-    .far.fa-star {
-        color: #dee2e6;
-    }
+.hotel-stars {
+    margin-top: 0.5rem;
+}
+.hotel-stars i {
+    font-size: 1.2rem;
+    margin-right: 0.2rem;
+}
+.fas.fa-star {
+    color: #ffc107;
+}
+.far.fa-star {
+    color: #dee2e6;
+}
+.action-buttons {
+    gap: 0.5rem;
+}

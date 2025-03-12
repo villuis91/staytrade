@@ -18,21 +18,20 @@
                         {% endfor %}
                     </div>
                   </div>
-                  <div class="action-buttons">
-                      <a href="{% url 'providers:hotel_update' hotel.id %}" class="btn btn-warning">
-                          <i class="fas fa-edit"></i> {% translate "Edit Hotel" %}
-                      </a>
-                      <button class="btn btn-primary"
-                              data-bs-toggle="modal"
-                              data-bs-target="#addRoomTypeModal">
-                          <i class="fas fa-plus"></i> {% translate "Add Room Type" %}
-                      </button>
-                      <button class="btn btn-danger"
-                              data-bs-toggle="modal"
-                              data-bs-target="#deleteHotelModal">
-                          <i class="fas fa-trash"></i> {% translate "Delete Hotel" %}
-                      </button>
-                  </div>
+                 <div class="action-buttons">
+    <a href="{% url 'providers:hotel_update' hotel.id %}" class="btn btn-warning">
+        <i class="fas fa-edit"></i> {% translate "Edit Hotel" %}
+    </a>
+    <a href="{% url 'providers:room_type_create_wizard' hotel_id=hotel.id step=1 %}" class="btn btn-primary">
+        <i class="fas fa-add"></i> {% translate "Add room type" %}
+    </a>
+    <button class="btn btn-danger"
+            data-bs-toggle="modal"
+            data-bs-target="#deleteHotelModal">
+        <i class="fas fa-trash"></i> {% translate "Delete Hotel" %}
+    </button>
+</div>
+            </div>
             </div>
         </div>
 
@@ -155,26 +154,6 @@
                         {% translate "Delete Hotel" %}
                     </button>
                 </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal para añadir Room Type -->
-<div class="modal fade" id="addRoomTypeModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">{% translate "Add Room Type" %}</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>{% translate "Add new room type functionality coming soon..." %}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                    {% translate "Close" %}
-                </button>
             </div>
         </div>
     </div>

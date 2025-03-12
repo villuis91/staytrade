@@ -26,6 +26,8 @@ class Hotel(SoftDeletedTimestamped):
 
     # Description fields
     name = models.CharField(
+        help_text=_("This will be the public hotel's name."),
+        verbose_name=_("Hotel's name"),
         max_length=255,
         null=False,
         blank=False,
@@ -44,11 +46,13 @@ class Hotel(SoftDeletedTimestamped):
     # Urls
     google_maps_location = models.URLField(
         verbose_name=_("Google maps url."),
+        help_text=_("Google maps location link"),
         null=True,
         blank=True,
     )
     site_url = models.URLField(
         verbose_name=_("Site url."),
+        help_text=_("Your allocation website."),
         null=True,
         blank=True,
     )
@@ -57,7 +61,7 @@ class Hotel(SoftDeletedTimestamped):
         help_text="Hotel's phone number.",
         null=True,
     )
-    text_location = models.CharField(max_length=255)
+    text_location = models.CharField(verbose_name=_("Location"), help_text=_("The public location text"), max_length=255)
     # Pictures
     # Consider to use a model linked to Rooms with images +Calls but +elegant
     _upload_destine_root = "hotel-pictures/"

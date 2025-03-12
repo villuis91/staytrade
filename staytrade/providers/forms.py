@@ -11,12 +11,6 @@ class HotelBasicInfoForm(forms.ModelForm):
 
 
 class HotelLocationForm(forms.ModelForm):
-    stars = forms.IntegerField(
-        min_value=1,
-        max_value=5,
-        widget=forms.NumberInput(attrs={"class": "form-control"}),
-    )
-
     class Meta:
         model = Hotel
         fields = ["text_location", "contact_phone", "google_maps_location", "site_url"]
@@ -46,11 +40,11 @@ class RoomTypeCapacityForm(forms.ModelForm):
 
     class Meta:
         model = RoomType
-        fields = ["adults_capacity", "children_capacity", "room_number"]
+        fields = ["adults_capacity", "children_capacity", "stock"]
         widgets = {
             "adults_capacity": forms.NumberInput(attrs={"min": 1}),
             "children_capacity": forms.NumberInput(attrs={"min": 0}),
-            "room_number": forms.NumberInput(attrs={"min": 1}),
+            "stock": forms.NumberInput(attrs={"min": 1}),
         }
 
 
