@@ -183,32 +183,7 @@ class RoomType(SoftDeletedTimestamped):
         unique_together = ("hotel", "name")
 
 
-class RoomTypeAvailability(TimeStampedModel):
-    room_type = models.ForeignKey(
-        RoomType,
-        on_delete=models.CASCADE,
-        related_name="availabilities",
-        null=False,
-        blank=False,
-    )
-    start_date = models.DateField(
-        verbose_name=_("Initial date"),
-        help_text=_("Initial date of disponibility period."),
-        null=False,
-        blank=False,
-    )
-    end_date = models.DateField(
-        verbose_name=_("Final date"),
-        help_text=_("Final date of disponibility period."),
-        null=False,
-        blank=False,
-    )
-
-    # Date range intersections must be controlled
-    class Meta:
-        unique_together = ("room_type", "start_date", "end_date")
-
-
+# Probably will be dropped from this app and included in the trading one
 class RoomNight(SoftDeletedTimestamped):
     entry_datetime = models.DateTimeField(
         null=False,
@@ -232,3 +207,44 @@ class RoomNight(SoftDeletedTimestamped):
         null=False,
         blank=False,
     )
+
+
+class MealPlan(models.Model):
+    name = models.CharField(
+        verbose_name=_("Meal plan name"), help_text=_("Meal plan name"), max_length=255
+    )
+    details = models.TextField(
+        verbose_name=_("Meal plan detail"), help_text=_("Details and meal description")
+    )
+
+    def __str__(self):
+        return self.name
+
+
+class RoomTypeMealPlan(models.Model):
+    room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
+    meal_plan = models.ForeignKey(MealPlan, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = ("room_type", "meal_plan")
+
+    def __str__(self):
+        return f"{self.room_type.name} - {self.meal_plan.name}"
+
+
+class RoomTypeMealPlanPrice(models.Model):
+    room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
+    meal_plan = models.ForeignKey(MealPlan, on_delete=models.CASCADE)
+    date = models.DateField(verbose_name=_("Date"), help_text=_("Roomnight date"))
+    price = models.DecimalField(
+        verbose_name=_("Roomnight price"),
+        help_text=_("Roomnight price"),
+        max_digits=10,
+        decimal_places=2,
+    )
+
+    class Meta:
+        unique_together = ("room_type", "meal_plan", "date")
+
+    def __str__(self):
+        return f"{self.room_type.name} - {self.meal_plan.name} ({self.date}): {self.price}€"

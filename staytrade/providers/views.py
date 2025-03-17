@@ -9,7 +9,7 @@ from django.views.generic import (
     DeleteView,
 )
 from django.urls import reverse, reverse_lazy
-from staytrade.providers.models import Hotel, RoomType, RoomTypeAvailability
+from staytrade.providers.models import Hotel, RoomType
 from staytrade.providers.forms import (
     HotelBasicInfoForm,
     HotelLocationForm,
@@ -17,7 +17,6 @@ from staytrade.providers.forms import (
     RoomTypeBasicInfoForm,
     RoomTypeCapacityForm,
     RoomTypeImagesForm,
-    RoomTypeAvailabilityForm,
 )
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
@@ -169,7 +168,6 @@ class RoomTypeCreationWizardView(SessionWizardView):
         ("0", RoomTypeBasicInfoForm),
         ("1", RoomTypeCapacityForm),
         ("2", RoomTypeImagesForm),
-        ("3", RoomTypeAvailabilityForm),
     ]
     template_name = "providers/wizards/room_type_wizard_form.html"
     file_storage = FileSystemStorage()
@@ -180,7 +178,6 @@ class RoomTypeCreationWizardView(SessionWizardView):
             "0": _("Basic info"),
             "1": _("Capacity"),
             "2": _("Images"),
-            "3": _("Avalability"),
         }
         context["hotel_id"] = self.kwargs["hotel_id"]
         return context
@@ -192,7 +189,7 @@ class RoomTypeCreationWizardView(SessionWizardView):
     def done(self, form_list, **kwargs):
         # Procesar los datos del formulario
         room_type_data = {}
-        for form in form_list[:-1]:
+        for form in form_list:
             room_type_data.update(form.cleaned_data)
 
         # Crear RoomType
@@ -202,19 +199,15 @@ class RoomTypeCreationWizardView(SessionWizardView):
             created_by=self.request.user,
         )
 
-        # Crear RoomTypeAvailability
-        # TODO: Implement when defined
-        # availability_data = form_list[-1].cleaned_data
-        # RoomTypeAvailability.objects.create(room_type=room_type, **availability_data)
-        # HTMX response
         response = HttpResponse()
         response["HX-Redirect"] = reverse(
-            "providers:my_hotel_rooms_list", kwargs={"hotel_id": self.kwargs["hotel_id"]}
+            "providers:my_hotel_rooms_list",
+            kwargs={"hotel_id": self.kwargs["hotel_id"]},
         )
         return response
 
     def render_next_step(self, form, **kwargs):
-        """Renderiza solo el contenido del formulario si es una solicitud HTMX"""
+        """Conditional rending to manage HTMX requests"""
         if self.request.headers.get("HX-Request"):
             # Cambiar el template para peticiones HTMX
             self.template_name = "providers/wizards/partials/room_type_wizard_form.html"
@@ -222,7 +215,7 @@ class RoomTypeCreationWizardView(SessionWizardView):
         return response
 
     def render(self, form=None, **kwargs):
-        """Maneja el template correcto para peticiones HTMX"""
+        """Template management for  HTMX requests"""
         if self.request.headers.get("HX-Request"):
             self.template_name = "providers/wizards/partials/room_type_wizard_form.html"
         return super().render(form, **kwargs)

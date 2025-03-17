@@ -1,6 +1,6 @@
 # hotels/forms.py
 from django import forms
-from .models import Hotel, RoomType, RoomTypeAvailability
+from .models import Hotel, RoomType
 
 
 # Hotel wizard forms
@@ -58,16 +58,4 @@ class RoomTypeImagesForm(forms.ModelForm):
             "main_picture": forms.FileInput(attrs={"class": "form-control"}),
             "secondary_picture": forms.FileInput(attrs={"class": "form-control"}),
             "third_picture": forms.FileInput(attrs={"class": "form-control"}),
-        }
-
-
-class RoomTypeAvailabilityForm(forms.ModelForm):
-    """Paso 4: Disponibilidad inicial"""
-
-    class Meta:
-        model = RoomTypeAvailability
-        fields = ["start_date", "end_date"]
-        widgets = {
-            "start_date": forms.DateInput(attrs={"type": "date"}),
-            "end_date": forms.DateInput(attrs={"type": "date"}),
         }
