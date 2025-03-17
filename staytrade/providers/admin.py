@@ -24,7 +24,7 @@ class HotelAdmin(admin.ModelAdmin):
 
 
 # class InlineRoomTypeAvailability(admin.TabularInline):
-    # model = RoomTypeAvailability
+# model = RoomTypeAvailability
 
 
 @admin.register(RoomType)
