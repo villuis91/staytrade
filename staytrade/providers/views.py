@@ -25,11 +25,41 @@ from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.template.loader import render_to_string
 
 
 # Main area
 class MyAreaView(LoginRequiredMixin, TemplateView):
     template_name = "providers/providers_area.html"
+
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.headers.get("HX-Request"):
+            response = HttpResponse()
+            # Redirigir a una URL específica en lugar de renderizar el template
+            response["HX-Redirect"] = self.request.build_absolute_uri(
+                reverse('providers:my_area')
+            )
+            return response
+        return super().render_to_response(context, **response_kwargs)
+
+
+class HotelManagementView(LoginRequiredMixin, TemplateView):
+    template_name = "providers/hotel_management_area.html"
+
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.headers.get("HX-Request"):
+            response = HttpResponse()
+            # Redirigir a una URL específica en lugar de renderizar el template
+            response["HX-Redirect"] = self.request.build_absolute_uri(
+                reverse('providers:hotel_management')
+            )
+            return response
+        return super().render_to_response(context, **response_kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["hotel_id"] = self.kwargs.get('pk')
+        return context
 
 
 # Hotel related views

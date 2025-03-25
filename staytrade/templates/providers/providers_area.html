@@ -7,7 +7,7 @@
 
     <div class="provider-areas">
         <!-- Área de Hoteles -->
-        <a href="{% url 'providers:my_hotels_list' %}" class="provider-area-card">
+        <a hx-get="{% url 'providers:my_hotels_list' %}" hx-target="body" class="provider-area-card">
             <div class="provider-area-content">
                 <i class="fas fa-hotel fa-3x mb-3"></i>
                 <h2>{% translate "Hotels" %}</h2>
@@ -16,7 +16,7 @@
         </a>
 
         <!-- Área de Habitaciones -->
-        <a href="{% url 'providers:my_area' %}" class="provider-area-card">
+        <a hx-get="{% url 'providers:my_area' %}" hx-target="body" class="provider-area-card">
             <div class="provider-area-content">
                 <i class="fas fa-bed fa-3x mb-3"></i>
                 <h2>{% translate "Room Nights" %}</h2>

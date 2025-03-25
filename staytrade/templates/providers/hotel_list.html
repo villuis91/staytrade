@@ -37,7 +37,7 @@
                           <a href="{% url 'providers:hotel_detail' hotel.id %}" class="btn btn-outline-primary">
                               {% translate "View Details" %}
                           </a>
-                          <a href="{% url 'providers:my_hotel_rooms_list' hotel_id=hotel.id %}" class="btn btn-outline-secondary">
+                          <a href="{% url 'providers:hotel_management' pk=hotel.id %}" class="btn btn-outline-secondary">
                               {% translate "Manage Rooms" %}
                           </a>
                       </div>
