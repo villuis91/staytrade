@@ -37,7 +37,7 @@ class MyAreaView(LoginRequiredMixin, TemplateView):
             response = HttpResponse()
             # Redirigir a una URL específica en lugar de renderizar el template
             response["HX-Redirect"] = self.request.build_absolute_uri(
-                reverse('providers:my_area')
+                reverse("providers:my_area")
             )
             return response
         return super().render_to_response(context, **response_kwargs)
@@ -51,15 +51,10 @@ class HotelManagementView(LoginRequiredMixin, TemplateView):
             response = HttpResponse()
             # Redirigir a una URL específica en lugar de renderizar el template
             response["HX-Redirect"] = self.request.build_absolute_uri(
-                reverse('providers:hotel_management')
+                reverse("providers:hotel_management")
             )
             return response
         return super().render_to_response(context, **response_kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["hotel_id"] = self.kwargs.get('pk')
-        return context
 
 
 # Hotel related views

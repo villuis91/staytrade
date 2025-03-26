@@ -4,10 +4,9 @@
 {% block content %}
 <div class="content">
     <h1 class="mb-4">Hotel: {{ hotel_id }}</h1>
-
     <div class="provider-areas">
         <!-- Área de Tipos de Habitación -->
-        <a href="{% url 'providers:my_hotel_rooms_list' hotel_id=hotel_id %}" class="provider-area-card">
+        <a href="{% url 'providers:my_hotel_rooms_list' hotel_id=pk %}" class="provider-area-card">
             <div class="provider-area-content">
                 <span class="fa-stack fa-2x mb-3">
                     <i class="fas fa-square fa-stack-2x text-primary"></i>
