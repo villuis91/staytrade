@@ -1,16 +1,21 @@
 from django.urls import path
-from staytrade.providers.views import (
+from staytrade.providers.views.hotels import (
     HotelCreationWizard,
     HotelDetailView,
     HotelDeleteView,
     HotelUpdateView,
     MyHotelsListView,
-    MyAreaView,
+)
+from staytrade.providers.views.room_types import (
     RoomTypeCreationWizardView,
     RoomTypeDeleteView,
     RoomTypeDetailView,
     RoomTypeUpdateView,
     MyHotelRoomsListView,
+)
+
+from staytrade.providers.views.misc import (
+    MyAreaView,
     HotelManagementView,
 )
 
