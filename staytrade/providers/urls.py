@@ -13,10 +13,16 @@ from staytrade.providers.views.room_types import (
     RoomTypeUpdateView,
     MyHotelRoomsListView,
 )
-
 from staytrade.providers.views.misc import (
     MyAreaView,
     HotelManagementView,
+)
+from staytrade.providers.views.meal_plans import (
+    MealPlanListView,
+    MealPlanCreateView,
+    MealPlanDetailView,
+    MealPlanUpdateView,
+    MealPlanDeleteView,
 )
 
 app_name = "providers"
@@ -70,5 +76,30 @@ urlpatterns = [
         RoomTypeUpdateView.as_view(),
         name="roomtype_update",
     ),
-    # Room meal plans
+    # Meal plans
+    path(
+        "mealplan/list/<int:hotel_id>/",
+        MealPlanListView.as_view(),
+        name="meal_plan_list",
+    ),
+    path(
+        "mealplan/create/<int:hotel_id>/",
+        MealPlanCreateView.as_view(),
+        name="meal_plan_create",
+    ),
+    path(
+        "mealplan/detail/<int:pk>/",
+        MealPlanDetailView.as_view(),
+        name="meal_plan_detail",
+    ),
+    path(
+        "mealplan/update/<int:pk>/",
+        MealPlanUpdateView.as_view(),
+        name="meal_plan_update",
+    ),
+    path(
+        "mealplan/delete/<int:pk>/",
+        MealPlanDeleteView.as_view(),
+        name="meal_plan_delete",
+    ),
 ]

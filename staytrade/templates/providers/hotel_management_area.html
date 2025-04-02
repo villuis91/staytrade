@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="content">
-    <h1 class="mb-4">Hotel: {{ hotel_id }}</h1>
+    <h1 class="mb-4">Hotel: {{ pk }}</h1>
     <div class="provider-areas">
         <!-- Área de Tipos de Habitación -->
         <a href="{% url 'providers:my_hotel_rooms_list' hotel_id=pk %}" class="provider-area-card">
@@ -18,14 +18,25 @@
         </a>
 
         <!-- Área de Tipos de Pensión -->
-        <a href="{% url 'providers:my_area' %}" class="provider-area-card">
+        <a href="{% url 'providers:meal_plan_list' hotel_id=pk  %}" class="provider-area-card">
             <div class="provider-area-content">
                 <span class="fa-stack fa-2x mb-3">
                     <i class="fas fa-circle fa-stack-2x text-primary"></i>
                     <i class="fas fa-utensils fa-stack-1x text-white"></i>
                 </span>
                 <h2>{% translate "Meal types" %}</h2>
-                <p>{% translate "Define your meal tipes" %}</p>
+                <p>{% translate "Define your meal plans" %}</p>
+            </div>
+        </a>
+        <!-- Área de precios -->
+        <a href="{% url 'providers:my_area' %}" class="provider-area-card">
+            <div class="provider-area-content">
+                <span class="fa-stack fa-2x mb-3">
+                    <i class="fas fa-circle fa-stack-2x text-primary"></i>
+                    <i class="fas fa-coins fa-stack-1x text-white"></i>
+                </span>
+                <h2>{% translate "Plan Prices" %}</h2>
+                <p>{% translate "Define prices for each room and meal plan" %}</p>
             </div>
         </a>
     </div>

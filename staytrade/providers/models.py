@@ -210,6 +210,12 @@ class RoomNight(SoftDeletedTimestamped):
 
 
 class MealPlan(models.Model):
+    hotel = models.ForeignKey(
+        Hotel,
+        on_delete=models.CASCADE,
+        null=False,
+        blank=False,
+    )
     name = models.CharField(
         verbose_name=_("Meal plan name"), help_text=_("Meal plan name"), max_length=255
     )
@@ -219,6 +225,9 @@ class MealPlan(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ("hotel", "name")
 
 
 class RoomTypeMealPlan(models.Model):

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Cabecera con botones de acción -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>{{ meal_plan.name }}</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'providers:meal_plan_list' hotel_id=meal_plan.hotel.id %}">
+                            {% trans "Planes de Comidas" %}
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">
+                        {{ meal_plan.name }}
+                    </li>
+                </ol>
+            </nav>
+        </div>
+        <div>
+            <a href="{% url 'providers:meal_plan_update' pk=meal_plan.id %}"
+               class="btn btn-outline-primary me-2">
+                <i class="fas fa-edit"></i> {% trans "Editar" %}
+            </a>
+            <button type="button"
+                    class="btn btn-outline-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteMealPlanModal">
+                <i class="fas fa-trash"></i> {% trans "Eliminar" %}
+            </button>
+        </div>
+    </div>
+
+    <!-- Información del plan -->
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">{% trans "Detalles del Plan" %}</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">{{ meal_plan.details|linebreaks }}</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de eliminación -->
+<div class="modal fade" id="deleteMealPlanModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{% trans "Confirmar eliminación" %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans "¿Estás seguro de que deseas eliminar este plan de comidas?" %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    {% trans "Cancelar" %}
+                </button>
+                <form method="post" action="{% url 'providers:meal_plan_delete' meal_plan.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        {% trans "Eliminar" %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
