@@ -23,6 +23,7 @@ from staytrade.providers.views.meal_plans import (
     MealPlanDetailView,
     MealPlanUpdateView,
     MealPlanDeleteView,
+    RoomTypeMealPlanPriceView,
 )
 
 app_name = "providers"
@@ -101,5 +102,11 @@ urlpatterns = [
         "mealplan/delete/<int:pk>/",
         MealPlanDeleteView.as_view(),
         name="meal_plan_delete",
+    ),
+    # Meal plan room type  calendar
+    path(
+        "mealplan/prices/<int:hotel_id>",
+        RoomTypeMealPlanPriceView.as_view(),
+        name="room_type_meal_plan_price_offer",
     ),
 ]

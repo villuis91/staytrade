@@ -1,8 +1,25 @@
-from staytrade.shared.abstract_models import TimeStampedModel, SoftDeletedTimestamped
+from staytrade.shared.abstract_models import SoftDeletedTimestamped
 from staytrade.users.models import User, EnterpriseAccount
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
+
+
+class Localities(models.Model):
+    region = models.CharField(
+        max_length=255, verbose_name=_("Region"), help_text=_("Name of region or area")
+    )
+    province = models.CharField(
+        max_length=255, verbose_name=_("Province"), help_text=_("Locations province")
+    )
+    name = models.TextField(
+        max_length=255, verbose_name=_("Name"), help_text=_("Locality Name")
+    )
+    latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+
+    class Meta:
+        unique_together = ("name", "province")
 
 
 class Hotel(SoftDeletedTimestamped):
@@ -41,6 +58,9 @@ class Hotel(SoftDeletedTimestamped):
         validators=[MinValueValidator(0), MaxValueValidator(5)],
         null=False,
         blank=False,
+    )
+    locality = models.ForeignKey(
+        Localities, null=True, blank=True, on_delete=models.DO_NOTHING
     )
 
     # Urls

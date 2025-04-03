@@ -1,16 +1,16 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
 from django.views.generic import (
     ListView,
     CreateView,
     UpdateView,
     DeleteView,
     DetailView,
+    TemplateView,
 )
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext_lazy as _
 from django.http import HttpResponse
-from staytrade.providers.models import MealPlan, RoomTypeMealPlan, RoomTypeMealPlanPrice
+from staytrade.providers.models import MealPlan, RoomType
 from .mixins import HotelContextMixin
 
 
@@ -62,3 +62,21 @@ class MealPlanDeleteView(LoginRequiredMixin, HotelContextMixin, DeleteView):
             response = HttpResponse()
             response["HX-Redirect"] = self.get_success_url()
         return response
+
+
+class RoomTypeMealPlanPriceView(LoginRequiredMixin, HotelContextMixin, TemplateView):
+    # Template management is done using an API to implenet it with full-calendar
+    template_name = "providers/room_type_meal_plan/price_calendar.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        hotel_id = self.get_hotel_id()
+
+        context.update(
+            {
+                "room_types": RoomType.objects.filter(hotel_id=hotel_id),
+                "meal_plans": MealPlan.objects.filter(hotel_id=hotel_id),
+                "title": _("Manage price offer"),
+            }
+        )
+        return context

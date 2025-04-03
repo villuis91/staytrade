@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+
+{% block extra_css %}
+    {{ block.super }}
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <style>
+        #calendar {
+            height: 600px;
+            margin: 15px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Controles de selección -->
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="roomTypeSelect" class="form-label">{% trans "Tipo de Habitación" %}</label>
+                        <select class="form-select" id="roomTypeSelect">
+                            <option value="">{% trans "Seleccione..." %}</option>
+                            {% for room_type in room_types %}
+                                <option value="{{ room_type.id }}">{{ room_type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="mealPlanSelect" class="form-label">{% trans "Plan de Comidas" %}</label>
+                        <select class="form-select" id="mealPlanSelect">
+                            <option value="">{% trans "Seleccione..." %}</option>
+                            {% for meal_plan in meal_plans %}
+                                <option value="{{ meal_plan.id }}">{{ meal_plan.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="defaultPrice" class="form-label">{% trans "Precio por Defecto" %}</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="defaultPrice" step="0.01">
+                            <span class="input-group-text">€</span>
+                        </div>
+                    </div>
+                    <button id="applyPrice" class="btn btn-primary">
+                        {% trans "Aplicar Precio" %}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Calendario -->
+        <div class="col-md-9">
+            <div class="card">
+                <div class="card-body">
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+    {{ block.super }}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js' defer></script>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js' defer></script>
+    <script src="{% static 'js/hotel_management.js' %}" defer></script>
+{% endblock %}

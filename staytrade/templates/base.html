@@ -8,68 +8,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Hotel rooms trade app" />
     <meta name="author" content="Vicent Lluís Tortosa Bataller" />
+
     <!-- Favicon -->
-    <link rel="icon"
-          type="image/x-icon"
-          href="{% static 'images/favicons/staytrade.ico' %}?v=2" />
-    <link rel="shortcut icon"
-          type="image/x-icon"
-          href="{% static 'images/favicons/staytrade.ico' %}?v=2" />
-    <link rel="icon"
-          type="image/vnd.microsoft.icon"
-          href="{% static 'images/favicons/staytrade.ico' %}?v=2" />
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="icon" type="image/x-icon" href="{% static 'images/favicons/staytrade.ico' %}?v=2" />
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'images/favicons/staytrade.ico' %}?v=2" />
+    <link rel="icon" type="image/vnd.microsoft.icon" href="{% static 'images/favicons/staytrade.ico' %}?v=2" />
+
     <title>
-      {% block title %}
-        StayTrade
-      {% endblock title %}
+      {% block title %}StayTrade{% endblock title %}
     </title>
+
     {% block css %}
+      <!-- Font Awesome -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
       <!-- Bootstrap CSS -->
-      <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css"
-            integrity="sha512-SbiR/eusphKoMVVXysTKG/7VseWii+Y3FdHrt0EpKgpToZeemhqHeZeLWLhJutz/2ut2Vw1uQEj2MbRF+TVBUA=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer" />
-      <!-- HTMX -->
-      <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css">
       <!-- Estilos personalizados -->
       <link rel="stylesheet" href="{% static 'css/main.css' %}" />
       <link rel="stylesheet" href="{% static 'css/components.css' %}" />
     {% endblock css %}
-    {% block javascript %}
+
+    {% block extra_css %}{% endblock extra_css %}
+
+    {% block javascript_head %}
+      <!-- HTMX -->
+      <script src="https://unpkg.com/htmx.org@1.9.10" defer></script>
       <!-- Bootstrap JS -->
-      <script defer
-              src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js"
-              integrity="sha512-1/RvZTcCDEUjY/CypiMz+iqqtaoQfAITmNSJY17Myp4Ms5mdxPS5UV7iOfdZoxcGhzFbOm6sntTKJppjvuhg4g=="
-              crossorigin="anonymous"
-              referrerpolicy="no-referrer"></script>
-      <!-- <script defer src="{% static 'js/main.js' %}"></script> -->
-    {% endblock javascript %}
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.min.js" defer></script>
+    {% endblock javascript_head %}
   </head>
+
   <body>
     <div class="app-container">
       {% include 'components/sidebar.html' %}
       <div class="main-content">
-        <!-- Header -->
         {% include 'components/header.html' %}
-        <!-- Mensajes -->
+
         {% if messages %}
           {% include 'components/messages.html' %}
         {% endif %}
-        <!-- Contenido principal -->
+
         <main class="content">
-          {% block content %}
-          {% endblock content %}
+          {% block content %}{% endblock content %}
         </main>
-        <!-- Footer -->
+
         {% include 'components/footer.html' %}
       </div>
     </div>
-    {% block modal %}
-    {% endblock modal %}
-    {% block inline_javascript %}
-    {% endblock inline_javascript %}
+
+    {% block modal %}{% endblock modal %}
+
+    {% block extra_js %}{% endblock extra_js %}
   </body>
 </html>
