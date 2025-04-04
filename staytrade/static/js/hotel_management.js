@@ -90,3 +90,62 @@ document.addEventListener('DOMContentLoaded', function() {
         // Aquí implementaremos la lógica para aplicar el precio
     });
 });
+
+function handleDateSelection(start, end, price) {
+    const roomTypeId = document.getElementById('roomTypeSelect').value;
+    const mealPlanId = document.getElementById('mealPlanSelect').value;
+
+    if (!roomTypeId || !mealPlanId) {
+        alert('Por favor, seleccione tipo de habitación y plan de comidas');
+        return;
+    }
+
+    const formattedStart = formatDate(start);
+    const formattedEnd = formatDate(end);
+
+    // Enviar al backend
+    fetch('/api/room-prices/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken(), // Función para obtener el token CSRF
+        },
+        body: JSON.stringify({
+            start_date: formattedStart,
+            end_date: formattedEnd,
+            price: parseFloat(price),
+            room_type_id: roomTypeId,
+            meal_plan_id: mealPlanId
+        })
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(err => Promise.reject(err));
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Refrescar el calendario
+        calendar.refetchEvents();
+        // Mostrar mensaje de éxito
+        showSuccessMessage('Precios actualizados correctamente');
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showErrorMessage('Error al guardar los precios');
+    });
+}
+
+// Función auxiliar para obtener el token CSRF
+function getCsrfToken() {
+    return document.querySelector('[name=csrfmiddlewaretoken]').value;
+}
+
+// Funciones para mostrar mensajes
+function showSuccessMessage(message) {
+    // Implementa tu lógica de mostrar mensajes
+}
+
+function showErrorMessage(message) {
+    // Implementa tu lógica de mostrar mensajes
+}

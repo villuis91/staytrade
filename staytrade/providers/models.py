@@ -261,6 +261,15 @@ class RoomTypeMealPlan(models.Model):
         return f"{self.room_type.name} - {self.meal_plan.name}"
 
 
+class RoomPriceManager(models.Manager):
+    def create_or_update_prices(
+        self, start_date, end_date, price, room_type, meal_plan
+    ):
+        # Lógica para crear o actualizar precios
+        # Puedes implementar aquí la lógica específica de tu negocio
+        pass
+
+
 class RoomTypeMealPlanPrice(models.Model):
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
     meal_plan = models.ForeignKey(MealPlan, on_delete=models.CASCADE)
@@ -271,6 +280,8 @@ class RoomTypeMealPlanPrice(models.Model):
         max_digits=10,
         decimal_places=2,
     )
+
+    objects = RoomPriceManager()
 
     class Meta:
         unique_together = ("room_type", "meal_plan", "date")
