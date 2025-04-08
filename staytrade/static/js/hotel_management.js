@@ -1,55 +1,20 @@
-document.addEventListener('DOMContentLoaded', function() {
+class HotelCalendar {
+    constructor() {
+        this.calendar = null;
+        this.roomTypeSelect = document.getElementById('roomTypeSelect');
+        this.mealPlanSelect = document.getElementById('mealPlanSelect');
+        this.initializeCalendar();
+        this.setupEventListeners();
+    }
+
+initializeCalendar() {
     const calendarEl = document.getElementById('calendar');
     if (!calendarEl) {
         console.error('No se encuentra el elemento calendar');
         return;
     }
 
-    function formatDate(date) {
-        // Convierte la fecha a YYYY-MM-DD
-        return date.toISOString().split('T')[0];
-    }
-
-    function loadPrices(start, end, callback) {
-        const roomTypeId = document.getElementById('roomTypeSelect').value;
-        const mealPlanId = document.getElementById('mealPlanSelect').value;
-
-        if (!roomTypeId || !mealPlanId) return;
-
-        // Formateamos las fechas antes de enviarlas
-        const formattedStart = formatDate(start);
-        const formattedEnd = formatDate(end);
-
-        fetch(`/api/room-prices/?room_type_id=${roomTypeId}&meal_plan_id=${mealPlanId}&start=${formattedStart}&end=${formattedEnd}`)
-            .then(response => response.json())
-            .then(data => callback(data));
-    }
-
-     function handleDateSelection(start, end, price) {
-        const roomTypeId = document.getElementById('roomTypeSelect').value;
-        const mealPlanId = document.getElementById('mealPlanSelect').value;
-
-        if (!roomTypeId || !mealPlanId) {
-            alert('Por favor, seleccione tipo de habitación y plan de comidas');
-            return;
-        }
-
-        // Formateamos las fechas antes de enviarlas
-        const formattedStart = formatDate(start);
-        const formattedEnd = formatDate(end);
-
-        // Aquí implementaremos la lógica para guardar los precios
-        console.log('Guardando precios:', {
-            start: formattedStart,
-            end: formattedEnd,
-            price,
-            roomTypeId,
-            mealPlanId
-        });
-    }
-
-    // Inicialización del calendario
-    const calendar = new FullCalendar.Calendar(calendarEl, {
+    this.calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         selectable: true,
         locale: 'es',
@@ -58,94 +23,133 @@ document.addEventListener('DOMContentLoaded', function() {
             center: 'title',
             right: 'dayGridMonth'
         },
-        select: function(info) {
-            const price = document.getElementById('defaultPrice').value;
-            if (!price) {
-                alert('Por favor, establezca un precio');
-                return;
-            }
-            handleDateSelection(info.start, info.end, price);
+        select: (info) => this.handleDateSelection(info),
+        events: (info, successCallback, failureCallback) => {
+            this.loadPrices(info, successCallback, failureCallback);
         },
-        events: function(info, successCallback, failureCallback) {
-            loadPrices(info.start, info.end, successCallback);
-        }
+        // Añadimos la configuración de visualización de eventos
+        eventContent: (arg) => {
+            return {
+                html: `
+                    <div class="fc-event-main-content" style="padding: 2px;">
+                        <div style="font-weight: bold; color: #2c3e50;">
+                            ${arg.event.extendedProps.price}€
+                        </div>
+                    </div>
+                `
+            };
+        },
+        // Configuración adicional para mejorar la visualización
+        eventDisplay: 'block',
+        eventBackgroundColor: '#ffffff',
+        eventBorderColor: '#e0e0e0',
+        eventTextColor: '#2c3e50'
     });
 
-    calendar.render();
+    this.calendar.render();
+}
 
-    // Event Listeners
-    document.getElementById('roomTypeSelect').addEventListener('change', function() {
-        console.log('Tipo de habitación cambiado:', this.value);
-        calendar.refetchEvents();
-    });
+    setupEventListeners() {
+        this.roomTypeSelect.addEventListener('change', () => {
+            this.calendar.refetchEvents();
+        });
 
-    document.getElementById('mealPlanSelect').addEventListener('change', function() {
-        console.log('Plan de comidas cambiado:', this.value);
-        calendar.refetchEvents();
-    });
-
-    document.getElementById('applyPrice').addEventListener('click', function() {
-        const price = document.getElementById('defaultPrice').value;
-        console.log('Precio a aplicar:', price);
-        // Aquí implementaremos la lógica para aplicar el precio
-    });
-});
-
-function handleDateSelection(start, end, price) {
-    const roomTypeId = document.getElementById('roomTypeSelect').value;
-    const mealPlanId = document.getElementById('mealPlanSelect').value;
-
-    if (!roomTypeId || !mealPlanId) {
-        alert('Por favor, seleccione tipo de habitación y plan de comidas');
-        return;
+        this.mealPlanSelect.addEventListener('change', () => {
+            this.calendar.refetchEvents();
+        });
     }
 
-    const formattedStart = formatDate(start);
-    const formattedEnd = formatDate(end);
+    async loadPrices(info, successCallback, failureCallback) {
+        try {
+            const params = new URLSearchParams({
+                room_type_id: this.roomTypeSelect.value || '',
+                meal_plan_id: this.mealPlanSelect.value || '',
+                start: this.formatDate(info.start),
+                end: this.formatDate(info.end)
+            });
 
-    // Enviar al backend
-    fetch('/api/room-prices/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCsrfToken(), // Función para obtener el token CSRF
-        },
-        body: JSON.stringify({
-            start_date: formattedStart,
-            end_date: formattedEnd,
-            price: parseFloat(price),
-            room_type_id: roomTypeId,
-            meal_plan_id: mealPlanId
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            return response.json().then(err => Promise.reject(err));
+            const response = await fetch(`/api/room-prices/calendar_data/?${params}`);
+
+            if (!response.ok) {
+                throw new Error('Error al cargar los precios');
+            }
+
+            const data = await response.json();
+            successCallback(data);
+        } catch (error) {
+            console.error('Error cargando precios:', error);
+            failureCallback(error);
         }
-        return response.json();
-    })
-    .then(data => {
-        // Refrescar el calendario
-        calendar.refetchEvents();
-        // Mostrar mensaje de éxito
-        showSuccessMessage('Precios actualizados correctamente');
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        showErrorMessage('Error al guardar los precios');
-    });
+    }
+
+    async handleDateSelection(info) {
+        if (!this.validateSelections()) return;
+
+        try {
+            const price = await this.showPricePrompt();
+            if (!price) return;
+
+            const response = await fetch('/api/room-prices/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCsrfToken()
+                },
+                body: JSON.stringify({
+                    room_type_id: this.roomTypeSelect.value,
+                    meal_plan_id: this.mealPlanSelect.value,
+                    start_date: this.formatDate(info.start),
+                    end_date: this.formatDate(info.end),
+                    price: parseFloat(price)
+                })
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.detail || 'Error al guardar los precios');
+            }
+
+            const data = await response.json();
+            toastr.success('Precios guardados correctamente');
+            this.calendar.refetchEvents();
+
+        } catch (error) {
+            console.error('Error:', error);
+            toastr.error(error.message);
+        }
+    }
+
+    // Utilidades
+    formatDate(date) {
+        return date.toISOString().split('T')[0];
+    }
+
+    getCsrfToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    }
+
+    validateSelections() {
+        if (!this.roomTypeSelect.value || !this.mealPlanSelect.value) {
+            toastr.warning('Por favor, seleccione tipo de habitación y plan de comidas');
+            return false;
+        }
+        return true;
+    }
+
+    showPricePrompt() {
+        return new Promise((resolve) => {
+            const price = prompt('Introduce el precio:');
+            if (!price || isNaN(price) || price <= 0) {
+                toastr.warning('Por favor, introduce un precio válido');
+                resolve(null);
+            } else {
+                resolve(price);
+            }
+        });
+    }
 }
 
-// Función auxiliar para obtener el token CSRF
-function getCsrfToken() {
-    return document.querySelector('[name=csrfmiddlewaretoken]').value;
-}
-
-// Funciones para mostrar mensajes
-function showSuccessMessage(message) {
-    // Implementa tu lógica de mostrar mensajes
-}
-
-function showErrorMessage(message) {
-    // Implementa tu lógica de mostrar mensajes
-}
+// Inicialización cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', () => {
+    const hotelCalendar = new HotelCalendar();
+});

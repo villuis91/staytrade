@@ -10,10 +10,38 @@
             height: 600px;
             margin: 15px;
         }
+
+        /* Estilos para los eventos del calendario */
+        .fc-event {
+            border: 1px solid #e0e0e0 !important;
+            background-color: #ffffff !important;
+            margin: 2px !important;
+        }
+
+        .fc-event-main-content {
+            text-align: center;
+            padding: 4px !important;
+        }
+
+        .fc-daygrid-event {
+            white-space: normal !important;
+            align-items: center;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* Mejora la visualización en días con múltiples eventos */
+        .fc-daygrid-day-events {
+            margin-top: 2px !important;
+        }
+         <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     </style>
+
 {% endblock %}
 
 {% block content %}
+    {% csrf_token %}
 <div class="container-fluid py-4">
     <div class="row">
         <!-- Controles de selección -->
@@ -67,5 +95,16 @@
     {{ block.super }}
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js' defer></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js' defer></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script>
+        // Configuración inicial de toastr
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "positionClass": "toast-top-right",
+            "timeOut": "3000"
+        };
+    </script>
     <script src="{% static 'js/hotel_management.js' %}" defer></script>
 {% endblock %}
