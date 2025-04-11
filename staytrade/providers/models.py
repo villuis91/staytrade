@@ -3,6 +3,8 @@ from staytrade.users.models import User, EnterpriseAccount
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
+from datetime import datetime, timedelta
+from decimal import Decimal
 
 
 class Localities(models.Model):
@@ -262,29 +264,94 @@ class RoomTypeMealPlan(models.Model):
 
 
 class RoomPriceManager(models.Manager):
-    def create_or_update_prices(
-        self, start_date, end_date, price, room_type, meal_plan
-    ):
-        # Lógica para crear o actualizar precios
-        # Puedes implementar aquí la lógica específica de tu negocio
-        pass
+    def _generate_date_range(self, start_date, end_date):
+        """Helper para generar todas las fechas en el rango"""
+        if isinstance(start_date, str):
+            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+        if isinstance(end_date, str):
+            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+
+        current_date = start_date
+        while current_date <= end_date:
+            yield current_date
+            current_date += timedelta(days=1)
+
+    def create_or_update_prices(self, room_type_id, meal_plan_id, start_date, end_date, price):
+        """
+        Crea o actualiza precios para cada día en el rango de fechas
+        """
+        bulk_update_data = []
+        bulk_create_data = []
+
+        # Convertimos el precio a decimal si viene como string
+        if isinstance(price, str):
+            price = Decimal(price)
+
+        # Obtenemos registros existentes en el rango
+        existing_prices = self.filter(
+            room_type_id=room_type_id,
+            meal_plan_id=meal_plan_id,
+            date__range=[start_date, end_date]
+        ).values_list('date', flat=True)
+
+        existing_dates = set(existing_prices)
+
+        # Procesamos cada fecha en el rango
+        for date in self._generate_date_range(start_date, end_date):
+            if date in existing_dates:
+                # Actualizar precio existente
+                self.filter(
+                    room_type_id=room_type_id,
+                    meal_plan_id=meal_plan_id,
+                    date=date
+                ).update(price=price)
+            else:
+                # Crear nuevo registro
+                bulk_create_data.append(
+                    self.model(
+                        room_type_id=room_type_id,
+                        meal_plan_id=meal_plan_id,
+                        date=date,
+                        price=price
+                    )
+                )
+
+        # Creamos los nuevos registros en bulk
+        if bulk_create_data:
+            self.bulk_create(bulk_create_data)
+
+        return True
 
 
 class RoomTypeMealPlanPrice(models.Model):
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
     meal_plan = models.ForeignKey(MealPlan, on_delete=models.CASCADE)
-    date = models.DateField(verbose_name=_("Date"), help_text=_("Roomnight date"))
+    start_date = models.DateField(
+        verbose_name=_("Start Date"),
+        help_text=_("Start date for this price")
+    )
+    end_date = models.DateField(
+        verbose_name=_("End Date"),
+        help_text=_("End date for this price")
+    )
     price = models.DecimalField(
-        verbose_name=_("Roomnight price"),
-        help_text=_("Roomnight price"),
+        verbose_name=_("Price"),
+        help_text=_("Price for the date range"),
         max_digits=10,
-        decimal_places=2,
+        decimal_places=2
     )
 
     objects = RoomPriceManager()
 
     class Meta:
-        unique_together = ("room_type", "meal_plan", "date")
+        unique_together = ("room_type", "meal_plan", "start_date", "end_date")
+        # Valdemos rango
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(end_date__gte=models.F('start_date')),
+                name='valid_date_range'
+            )
+        ]
 
     def __str__(self):
-        return f"{self.room_type.name} - {self.meal_plan.name} ({self.date}): {self.price}€"
+        return f"{self.room_type.name} - {self.meal_plan.name} ({self.start_date} to {self.end_date}): {self.price}€"
