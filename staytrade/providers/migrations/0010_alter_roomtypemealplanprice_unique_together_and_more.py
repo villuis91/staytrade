@@ -6,37 +6,53 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('providers', '0009_alter_localities_unique_together'),
+        ("providers", "0009_alter_localities_unique_together"),
     ]
 
     operations = [
         migrations.AlterUniqueTogether(
-            name='roomtypemealplanprice',
-            unique_together={('room_type', 'meal_plan', 'start_date', 'end_date')},
+            name="roomtypemealplanprice",
+            unique_together={("room_type", "meal_plan", "start_date", "end_date")},
         ),
         migrations.AddField(
-            model_name='roomtypemealplanprice',
-            name='end_date',
-            field=models.DateField(default=None, help_text='End date for this price', verbose_name='End Date'),
+            model_name="roomtypemealplanprice",
+            name="end_date",
+            field=models.DateField(
+                default=None,
+                help_text="End date for this price",
+                verbose_name="End Date",
+            ),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='roomtypemealplanprice',
-            name='start_date',
-            field=models.DateField(default='2025-01-01', help_text='Start date for this price', verbose_name='Start Date'),
+            model_name="roomtypemealplanprice",
+            name="start_date",
+            field=models.DateField(
+                default="2025-01-01",
+                help_text="Start date for this price",
+                verbose_name="Start Date",
+            ),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='roomtypemealplanprice',
-            name='price',
-            field=models.DecimalField(decimal_places=2, help_text='Price for the date range', max_digits=10, verbose_name='Price'),
+            model_name="roomtypemealplanprice",
+            name="price",
+            field=models.DecimalField(
+                decimal_places=2,
+                help_text="Price for the date range",
+                max_digits=10,
+                verbose_name="Price",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='roomtypemealplanprice',
-            constraint=models.CheckConstraint(check=models.Q(('end_date__gte', models.F('start_date'))), name='valid_date_range'),
+            model_name="roomtypemealplanprice",
+            constraint=models.CheckConstraint(
+                check=models.Q(("end_date__gte", models.F("start_date"))),
+                name="valid_date_range",
+            ),
         ),
         migrations.RemoveField(
-            model_name='roomtypemealplanprice',
-            name='date',
+            model_name="roomtypemealplanprice",
+            name="date",
         ),
     ]

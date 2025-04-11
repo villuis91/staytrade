@@ -267,16 +267,18 @@ class RoomPriceManager(models.Manager):
     def _generate_date_range(self, start_date, end_date):
         """Helper para generar todas las fechas en el rango"""
         if isinstance(start_date, str):
-            start_date = datetime.strptime(start_date, '%Y-%m-%d').date()
+            start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
         if isinstance(end_date, str):
-            end_date = datetime.strptime(end_date, '%Y-%m-%d').date()
+            end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
 
         current_date = start_date
         while current_date <= end_date:
             yield current_date
             current_date += timedelta(days=1)
 
-    def create_or_update_prices(self, room_type_id, meal_plan_id, start_date, end_date, price):
+    def create_or_update_prices(
+        self, room_type_id, meal_plan_id, start_date, end_date, price
+    ):
         """
         Crea o actualiza precios para cada día en el rango de fechas
         """
@@ -291,8 +293,8 @@ class RoomPriceManager(models.Manager):
         existing_prices = self.filter(
             room_type_id=room_type_id,
             meal_plan_id=meal_plan_id,
-            date__range=[start_date, end_date]
-        ).values_list('date', flat=True)
+            date__range=[start_date, end_date],
+        ).values_list("date", flat=True)
 
         existing_dates = set(existing_prices)
 
@@ -301,9 +303,7 @@ class RoomPriceManager(models.Manager):
             if date in existing_dates:
                 # Actualizar precio existente
                 self.filter(
-                    room_type_id=room_type_id,
-                    meal_plan_id=meal_plan_id,
-                    date=date
+                    room_type_id=room_type_id, meal_plan_id=meal_plan_id, date=date
                 ).update(price=price)
             else:
                 # Crear nuevo registro
@@ -312,7 +312,7 @@ class RoomPriceManager(models.Manager):
                         room_type_id=room_type_id,
                         meal_plan_id=meal_plan_id,
                         date=date,
-                        price=price
+                        price=price,
                     )
                 )
 
@@ -327,18 +327,16 @@ class RoomTypeMealPlanPrice(models.Model):
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE)
     meal_plan = models.ForeignKey(MealPlan, on_delete=models.CASCADE)
     start_date = models.DateField(
-        verbose_name=_("Start Date"),
-        help_text=_("Start date for this price")
+        verbose_name=_("Start Date"), help_text=_("Start date for this price")
     )
     end_date = models.DateField(
-        verbose_name=_("End Date"),
-        help_text=_("End date for this price")
+        verbose_name=_("End Date"), help_text=_("End date for this price")
     )
     price = models.DecimalField(
         verbose_name=_("Price"),
         help_text=_("Price for the date range"),
         max_digits=10,
-        decimal_places=2
+        decimal_places=2,
     )
 
     objects = RoomPriceManager()
@@ -348,8 +346,8 @@ class RoomTypeMealPlanPrice(models.Model):
         # Valdemos rango
         constraints = [
             models.CheckConstraint(
-                check=models.Q(end_date__gte=models.F('start_date')),
-                name='valid_date_range'
+                check=models.Q(end_date__gte=models.F("start_date")),
+                name="valid_date_range",
             )
         ]
 
