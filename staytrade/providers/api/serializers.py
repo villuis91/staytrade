@@ -5,7 +5,7 @@ from staytrade.providers.models import RoomTypeMealPlanPrice, RoomType, MealPlan
 class RoomTypeMealPlanPriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = RoomTypeMealPlanPrice
-        fields = ["room_type", "meal_plan", "date", "price"]
+        fields = ["room_type", "meal_plan", "start_date", "end_date", "price"]
 
 
 class RoomTypeMealPlanPriceBulkSerializer(serializers.Serializer):

@@ -293,7 +293,8 @@ class RoomPriceManager(models.Manager):
         existing_prices = self.filter(
             room_type_id=room_type_id,
             meal_plan_id=meal_plan_id,
-            date__range=[start_date, end_date],
+            start_date__gte=start_date,
+            end_date__lte=end_date,
         ).values_list("date", flat=True)
 
         existing_dates = set(existing_prices)
@@ -303,7 +304,10 @@ class RoomPriceManager(models.Manager):
             if date in existing_dates:
                 # Actualizar precio existente
                 self.filter(
-                    room_type_id=room_type_id, meal_plan_id=meal_plan_id, date=date
+                    room_type_id=room_type_id,
+                    meal_plan_id=meal_plan_id,
+                    start_date=start_date,
+                    end_date=end_date,
                 ).update(price=price)
             else:
                 # Crear nuevo registro
@@ -311,7 +315,8 @@ class RoomPriceManager(models.Manager):
                     self.model(
                         room_type_id=room_type_id,
                         meal_plan_id=meal_plan_id,
-                        date=date,
+                        start_date=start_date,
+                        end_date__lte=end_date,
                         price=price,
                     )
                 )
