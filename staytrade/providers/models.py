@@ -289,13 +289,13 @@ class RoomPriceManager(models.Manager):
         if isinstance(price, str):
             price = Decimal(price)
 
-        # Obtenemos registros existentes en el rango
+        # Obtain entries and update them all
         existing_prices = self.filter(
             room_type_id=room_type_id,
             meal_plan_id=meal_plan_id,
             start_date__gte=start_date,
             end_date__lte=end_date,
-        ).values_list("date", flat=True)
+        ).values_list("start_date", "end_date")
 
         existing_dates = set(existing_prices)
 
@@ -316,7 +316,7 @@ class RoomPriceManager(models.Manager):
                         room_type_id=room_type_id,
                         meal_plan_id=meal_plan_id,
                         start_date=start_date,
-                        end_date__lte=end_date,
+                        end_date=end_date,
                         price=price,
                     )
                 )
