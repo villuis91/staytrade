@@ -21,3 +21,17 @@ class RoomTypeMealPlanPriceBulkSerializer(serializers.Serializer):
                 "La fecha de inicio debe ser anterior a la fecha final"
             )
         return data
+
+
+class CalendarEventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomTypeMealPlanPrice
+        fields = ["id", "start_date", "end_date", "price"]
+
+    def to_representation(self, instance):
+        return {
+            "id": instance.id,
+            "start": instance.start_date,
+            "end": instance.end_date,
+            "extendedProps": {"price": float(instance.price)},
+        }

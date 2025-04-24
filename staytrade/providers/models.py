@@ -286,7 +286,9 @@ class RoomPriceManager(models.Manager):
 
         return date_pairs
 
-    def create_or_update_prices(self, room_type_id, meal_plan_id, start_date, end_date, price):
+    def create_or_update_prices(
+        self, room_type_id, meal_plan_id, start_date, end_date, price
+    ):
         """
         Crea o actualiza precios para cada par de días consecutivos en el rango
         """
@@ -299,14 +301,14 @@ class RoomPriceManager(models.Manager):
         existing_query = self.filter(
             room_type_id=room_type_id,
             meal_plan_id=meal_plan_id,
-            start_date__range=(start_date, end_date)
+            start_date__range=(start_date, end_date),
         )
 
         # Actualizamos los precios existentes
         existing_query.update(price=price)
 
         # Obtenemos los rangos que ya existen (usando la misma query)
-        existing_ranges = set(existing_query.values_list('start_date', 'end_date'))
+        existing_ranges = set(existing_query.values_list("start_date", "end_date"))
 
         # Creamos solo los rangos que no existen
         bulk_create_data = [
@@ -315,7 +317,7 @@ class RoomPriceManager(models.Manager):
                 meal_plan_id=meal_plan_id,
                 start_date=range_start,
                 end_date=range_end,
-                price=price
+                price=price,
             )
             for range_start, range_end in date_ranges
             if (range_start, range_end) not in existing_ranges
