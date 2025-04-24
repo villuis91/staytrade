@@ -39,8 +39,7 @@ class RoomPriceViewSet(viewsets.ViewSet):
         Endpoint POST /api/room-prices/
         Guarda un nuevo precio
         """
-        # Aquí tu lógica para guardar precios
-        print(request.data)
+        # Aquí tu lógica para guardar precio
         data = request.data
         RoomTypeMealPlanPrice.objects.create_or_update_prices(**data)
         return Response({"message": "Precio guardado"}, status=status.HTTP_201_CREATED)
