@@ -10,68 +10,124 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('providers', '0003_remove_roomnight_owner_remove_roomnight_room_type_and_more'),
+        (
+            "providers",
+            "0003_remove_roomnight_owner_remove_roomnight_room_type_and_more",
+        ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='RoomNight',
+            name="RoomNight",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('restored_at', models.DateTimeField(blank=True, null=True)),
-                ('transaction_id', models.UUIDField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('entry_date', models.DateField()),
-                ('departure_date', models.DateField()),
-                ('room_type', models.ForeignKey(on_delete=django.db.models.deletion.DO_NOTHING, to='providers.roomtype')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("restored_at", models.DateTimeField(blank=True, null=True)),
+                ("transaction_id", models.UUIDField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("entry_date", models.DateField()),
+                ("departure_date", models.DateField()),
+                (
+                    "room_type",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to="providers.roomtype",
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='Booking',
+            name="Booking",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('restored_at', models.DateTimeField(blank=True, null=True)),
-                ('transaction_id', models.UUIDField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('check_in', models.DateTimeField()),
-                ('check_out', models.DateTimeField()),
-                ('status', models.CharField(choices=[('pending', 'Pendiente'), ('confirmed', 'Confirmada'), ('cancelled', 'Cancelada')], default='pending', max_length=20)),
-                ('room_nights', models.ManyToManyField(to='reservations.roomnight')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("restored_at", models.DateTimeField(blank=True, null=True)),
+                ("transaction_id", models.UUIDField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("check_in", models.DateTimeField()),
+                ("check_out", models.DateTimeField()),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("pending", "Pendiente"),
+                            ("confirmed", "Confirmada"),
+                            ("cancelled", "Cancelada"),
+                        ],
+                        default="pending",
+                        max_length=20,
+                    ),
+                ),
+                ("room_nights", models.ManyToManyField(to="reservations.roomnight")),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.CreateModel(
-            name='RoomNightOwner',
+            name="RoomNightOwner",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('deleted_at', models.DateTimeField(blank=True, null=True)),
-                ('restored_at', models.DateTimeField(blank=True, null=True)),
-                ('transaction_id', models.UUIDField(blank=True, null=True)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('first_name', models.CharField(max_length=64)),
-                ('last_name', models.CharField(max_length=128)),
-                ('phone_number', models.IntegerField()),
-                ('national_identifier', models.CharField(max_length=64)),
-                ('user', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("deleted_at", models.DateTimeField(blank=True, null=True)),
+                ("restored_at", models.DateTimeField(blank=True, null=True)),
+                ("transaction_id", models.UUIDField(blank=True, null=True)),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("first_name", models.CharField(max_length=64)),
+                ("last_name", models.CharField(max_length=128)),
+                ("phone_number", models.IntegerField()),
+                ("national_identifier", models.CharField(max_length=64)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.DO_NOTHING,
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'abstract': False,
+                "abstract": False,
             },
         ),
         migrations.AddField(
-            model_name='roomnight',
-            name='owner',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.DO_NOTHING, to='reservations.roomnightowner'),
+            model_name="roomnight",
+            name="owner",
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.DO_NOTHING,
+                to="reservations.roomnightowner",
+            ),
         ),
     ]

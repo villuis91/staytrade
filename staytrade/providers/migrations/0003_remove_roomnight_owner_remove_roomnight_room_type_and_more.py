@@ -6,25 +6,28 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('providers', '0002_roomnightowner_remove_roomnight_departure_datetime_and_more'),
+        (
+            "providers",
+            "0002_roomnightowner_remove_roomnight_departure_datetime_and_more",
+        ),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='roomnight',
-            name='owner',
+            model_name="roomnight",
+            name="owner",
         ),
         migrations.RemoveField(
-            model_name='roomnight',
-            name='room_type',
+            model_name="roomnight",
+            name="room_type",
         ),
         migrations.DeleteModel(
-            name='Booking',
+            name="Booking",
         ),
         migrations.DeleteModel(
-            name='RoomNightOwner',
+            name="RoomNightOwner",
         ),
         migrations.DeleteModel(
-            name='RoomNight',
+            name="RoomNight",
         ),
     ]

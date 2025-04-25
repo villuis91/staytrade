@@ -26,4 +26,3 @@ class HotelAdmin(admin.ModelAdmin):
 class RoomTypeAdmin(admin.ModelAdmin):
     model = RoomType
     readonly_fields = readonly_timestamps_soft
-
