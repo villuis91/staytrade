@@ -1,7 +1,6 @@
 from django.contrib import admin
 from staytrade.providers.models import (
     Hotel,
-    RoomNight,
     RoomType,
 )
 
@@ -23,18 +22,8 @@ class HotelAdmin(admin.ModelAdmin):
     readonly_fields = readonly_timestamps_soft + ["created_by"]
 
 
-# class InlineRoomTypeAvailability(admin.TabularInline):
-# model = RoomTypeAvailability
-
-
 @admin.register(RoomType)
 class RoomTypeAdmin(admin.ModelAdmin):
     model = RoomType
     readonly_fields = readonly_timestamps_soft
-    # inlines = [InlineRoomTypeAvailability]
 
-
-@admin.register(RoomNight)
-class RoomNightAdmin(admin.ModelAdmin):
-    model = RoomNight
-    readonly_fields = readonly_timestamps_soft
