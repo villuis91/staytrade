@@ -3,8 +3,7 @@ from staytrade.users.models import User, EnterpriseAccount
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils.translation import gettext_lazy as _
-from datetime import datetime, timedelta
-from decimal import Decimal
+from .managers import RoomPriceManager
 
 
 class Localities(models.Model):
@@ -205,16 +204,16 @@ class RoomType(SoftDeletedTimestamped):
         unique_together = ("hotel", "name")
 
 
+class RoomNightOwner(SoftDeletedTimestamped):
+    # Required data to own a RoomNight or booking
+    first_name = models.CharField(max_length=64)
+    last_name = models.CharField(max_length=128)
+    phone_number = models.IntegerField()
+    national_identifier = models.CharField(max_length=64)
+
+
 # Probably will be dropped from this app and included in the trading one
 class RoomNight(SoftDeletedTimestamped):
-    entry_datetime = models.DateTimeField(
-        null=False,
-        blank=False,
-    )
-    departure_datetime = models.DateTimeField(
-        null=False,
-        blank=False,
-    )
     entry_date = models.DateField(
         null=False,
         blank=False,
@@ -229,6 +228,29 @@ class RoomNight(SoftDeletedTimestamped):
         null=False,
         blank=False,
     )
+    # TODO: Null must be removed in production and set a default
+    owner = models.ForeignKey(RoomNightOwner, on_delete=models.DO_NOTHING, null=True)
+
+
+class Booking(SoftDeletedTimestamped):
+    check_in = models.DateTimeField(
+        null=False,
+        blank=False,
+    )
+    check_out = models.DateTimeField(
+        null=False,
+        blank=False,
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ("pending", "Pendiente"),
+            ("confirmed", "Confirmada"),
+            ("cancelled", "Cancelada"),
+        ],
+        default="pending",
+    )
+    room_nights = models.ManyToManyField(RoomNight)
 
 
 class MealPlan(models.Model):
@@ -261,72 +283,6 @@ class RoomTypeMealPlan(models.Model):
 
     def __str__(self):
         return f"{self.room_type.name} - {self.meal_plan.name}"
-
-
-class RoomPriceManager(models.Manager):
-    def _generate_date_range(self, start_date, end_date):
-        """
-        Helper para generar tuplas de fechas consecutivas (start_date, end_date)
-
-        Returns:
-            List[Tuple[date, date]]: Lista de tuplas con fechas consecutivas
-        """
-        if isinstance(start_date, str):
-            start_date = datetime.strptime(start_date, "%Y-%m-%d").date()
-        if isinstance(end_date, str):
-            end_date = datetime.strptime(end_date, "%Y-%m-%d").date()
-
-        date_pairs = []
-        current_date = start_date
-
-        while current_date < end_date:
-            next_date = current_date + timedelta(days=1)
-            date_pairs.append((current_date, next_date))
-            current_date = next_date
-
-        return date_pairs
-
-    def create_or_update_prices(
-        self, room_type_id, meal_plan_id, start_date, end_date, price
-    ):
-        """
-        Crea o actualiza precios para cada par de días consecutivos en el rango
-        """
-        if isinstance(price, str):
-            price = Decimal(price)
-
-        date_ranges = self._generate_date_range(start_date, end_date)
-
-        # Obtenemos los rangos existentes primero
-        existing_query = self.filter(
-            room_type_id=room_type_id,
-            meal_plan_id=meal_plan_id,
-            start_date__range=(start_date, end_date),
-        )
-
-        # Actualizamos los precios existentes
-        existing_query.update(price=price)
-
-        # Obtenemos los rangos que ya existen (usando la misma query)
-        existing_ranges = set(existing_query.values_list("start_date", "end_date"))
-
-        # Creamos solo los rangos que no existen
-        bulk_create_data = [
-            self.model(
-                room_type_id=room_type_id,
-                meal_plan_id=meal_plan_id,
-                start_date=range_start,
-                end_date=range_end,
-                price=price,
-            )
-            for range_start, range_end in date_ranges
-            if (range_start, range_end) not in existing_ranges
-        ]
-
-        if bulk_create_data:
-            self.bulk_create(bulk_create_data)
-
-        return True
 
 
 class RoomTypeMealPlanPrice(models.Model):
