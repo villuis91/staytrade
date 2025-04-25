@@ -10,8 +10,8 @@ router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("users", UserViewSet)
 router.register(r"room-prices", RoomPriceViewSet, basename="room-prices")
-router.register(r'room-nights', RoomNightViewSet)
-router.register(r'bookings', BookingViewSet)
+router.register(r"room-nights", RoomNightViewSet)
+router.register(r"bookings", BookingViewSet)
 
 app_name = "api"
 urlpatterns = router.urls
