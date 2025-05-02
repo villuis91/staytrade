@@ -1,14 +1,13 @@
-# views.py
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from .models import RoomNight, Booking
+from staytrade.reservations.models import RoomNight, Booking
 from .serializers import (
     RoomNightSerializer,
     BookingSerializer,
     RoomNightOwnerSerializer,
 )
-from .services import RoomAvailabilityService, BookingService
+from staytrade.reservations.services import RoomAvailabilityService, BookingService
 
 
 class RoomNightViewSet(viewsets.ModelViewSet):

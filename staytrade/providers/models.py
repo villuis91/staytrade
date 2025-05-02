@@ -178,9 +178,9 @@ class RoomType(SoftDeletedTimestamped):
         validators=[MinValueValidator(0)],
         default=1,
     )
-    stock = models.IntegerField(
-        verbose_name=_("Number of rooms"),
-        help_text=_("Number of rooms of the given room type."),
+    amount = models.IntegerField(
+        verbose_name=_("Amount"),
+        help_text=_("Amount of rooms of the given room type."),
         validators=[MinValueValidator(1)],
         null=False,
         blank=False,
