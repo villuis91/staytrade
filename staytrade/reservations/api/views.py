@@ -17,18 +17,19 @@ class RoomNightViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"])
     def create_with_owner(self, request):
         try:
-            owner_serializer = RoomNightOwnerSerializer(data=request.data.get("owner"))
-            if not owner_serializer.is_valid():
-                return Response(
-                    owner_serializer.errors, status=status.HTTP_400_BAD_REQUEST
-                )
+            # Validate data
+            serializer = RoomNightSerializer(data=request.data)
+            if not serializer.is_valid():
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            print("A")
 
             room_night = RoomAvailabilityService.create_room_nights(
-                room_type_id=request.data.get("room_type"),
-                start_date=request.data.get("entry_date"),
-                end_date=request.data.get("departure_date"),
-                owner_data=owner_serializer.validated_data,
+                room_type=serializer.validated_data["room_type"],
+                start_date=serializer.validated_data["entry_date"],
+                end_date=serializer.validated_data["departure_date"],
+                owner_data=serializer.validated_data["owner"],
             )
+            print("B")
 
             return Response(
                 RoomNightSerializer(room_night).data, status=status.HTTP_201_CREATED

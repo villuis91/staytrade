@@ -1,17 +1,15 @@
 from django.db import transaction
-from staytrade.providers.models import RoomType
 from .models import RoomNight, RoomNightOwner, Booking
 from datetime import timedelta
 
 
 class RoomAvailabilityService:
     @staticmethod
-    def check_availability(room_type_id, start_date, end_date):
-        room_type = RoomType.objects.get(id=room_type_id)
-        total_rooms = room_type.total_rooms
+    def check_availability(room_type, start_date, end_date):
+        amount = room_type.amount
 
         existing_nights = RoomNight.objects.get_availability(
-            room_type_id, start_date, end_date
+            room_type, start_date, end_date
         )
 
         availability = {}
@@ -26,8 +24,8 @@ class RoomAvailabilityService:
                 0,
             )
             availability[current_date] = {
-                "available": total_rooms - occupied,
-                "total": total_rooms,
+                "available": amount - occupied,
+                "amount": amount,
                 "occupied": occupied,
             }
             current_date += timedelta(days=1)
@@ -35,19 +33,21 @@ class RoomAvailabilityService:
         return availability
 
     @staticmethod
-    def create_room_nights(room_type_id, start_date, end_date, owner_data):
+    def create_room_nights(room_type, start_date, end_date, owner_data):
+
         availability = RoomAvailabilityService.check_availability(
-            room_type_id, start_date, end_date
+            room_type, start_date, end_date
         )
 
         if any(data["available"] <= 0 for data in availability.values()):
             raise ValueError("No hay disponibilidad suficiente")
 
-        with transaction.atomic():
+        with transaction.atomic()
+        # TODO: Check if owner already exists to don't repeat creations
             owner = RoomNightOwner.objects.create(**owner_data)
 
             return RoomNight.objects.create_for_period(
-                room_type_id, start_date, end_date, owner
+                room_type, start_date, end_date, owner
             )
 
 

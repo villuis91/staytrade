@@ -7,17 +7,25 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('providers', '0003_remove_roomnight_owner_remove_roomnight_room_type_and_more'),
+        (
+            "providers",
+            "0003_remove_roomnight_owner_remove_roomnight_room_type_and_more",
+        ),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='roomtype',
-            name='stock',
+            model_name="roomtype",
+            name="stock",
         ),
         migrations.AddField(
-            model_name='roomtype',
-            name='amount',
-            field=models.IntegerField(default=1, help_text='Amount of rooms of the given room type.', validators=[django.core.validators.MinValueValidator(1)], verbose_name='Amount'),
+            model_name="roomtype",
+            name="amount",
+            field=models.IntegerField(
+                default=1,
+                help_text="Amount of rooms of the given room type.",
+                validators=[django.core.validators.MinValueValidator(1)],
+                verbose_name="Amount",
+            ),
         ),
     ]

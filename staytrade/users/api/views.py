@@ -32,7 +32,7 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
     def token(self, request):
         username = request.data.get("username")
         password = request.data.get("password")
-
+        print(username)
         if not username or not password:
             return Response(
                 {"error": _("Both username and password are required")},
