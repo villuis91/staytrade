@@ -36,31 +36,34 @@ class UserViewSet(RetrieveModelMixin, ListModelMixin, UpdateModelMixin, GenericV
         if not username or not password:
             return Response(
                 {"error": _("Both username and password are required")},
-                status=status.HTTP_400_BAD_REQUEST
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
         user = authenticate(username=username, password=password)
 
         if not user:
             return Response(
-                {"error": _("Invalid credentials")},
-                status=status.HTTP_401_UNAUTHORIZED
+                {"error": _("Invalid credentials")}, status=status.HTTP_401_UNAUTHORIZED
             )
 
         # Get or create a token for the user
         token, created = Token.objects.get_or_create(user=user)
 
-        return Response({
-            "token": token.key,
-            "user_id": user.pk,
-            "email": user.email,
-            "is_new_token": created
-        })
+        return Response(
+            {
+                "token": token.key,
+                "user_id": user.pk,
+                "email": user.email,
+                "is_new_token": created,
+            }
+        )
 
     @action(detail=False, methods=["post"])
     def logout(self, request):
         try:
             request.user.auth_token.delete()
-            return Response({"success": _("Successfully logged out")}, status=status.HTTP_200_OK)
+            return Response(
+                {"success": _("Successfully logged out")}, status=status.HTTP_200_OK
+            )
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)

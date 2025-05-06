@@ -40,11 +40,11 @@ class RoomTypeCapacityForm(forms.ModelForm):
 
     class Meta:
         model = RoomType
-        fields = ["adults_capacity", "children_capacity", "stock"]
+        fields = ["adults_capacity", "children_capacity", "amount"]
         widgets = {
             "adults_capacity": forms.NumberInput(attrs={"min": 1}),
             "children_capacity": forms.NumberInput(attrs={"min": 0}),
-            "stock": forms.NumberInput(attrs={"min": 1}),
+            "amount": forms.NumberInput(attrs={"min": 1}),
         }
 
 
