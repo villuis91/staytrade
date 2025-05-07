@@ -21,7 +21,6 @@ class RoomNightViewSet(viewsets.ModelViewSet):
             serializer = RoomNightSerializer(data=request.data)
             if not serializer.is_valid():
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            print("A")
 
             room_night = RoomAvailabilityService.create_room_nights(
                 room_type=serializer.validated_data["room_type"],
@@ -29,7 +28,6 @@ class RoomNightViewSet(viewsets.ModelViewSet):
                 end_date=serializer.validated_data["departure_date"],
                 owner_data=serializer.validated_data["owner"],
             )
-            print("B")
 
             return Response(
                 RoomNightSerializer(room_night).data, status=status.HTTP_201_CREATED

@@ -42,8 +42,8 @@ class RoomAvailabilityService:
         if any(data["available"] <= 0 for data in availability.values()):
             raise ValueError("No hay disponibilidad suficiente")
 
-        with transaction.atomic()
-        # TODO: Check if owner already exists to don't repeat creations
+        with transaction.atomic():
+            # TODO: Check if owner already exists to don't repeat creations
             owner = RoomNightOwner.objects.create(**owner_data)
 
             return RoomNight.objects.create_for_period(
