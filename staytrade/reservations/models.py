@@ -3,6 +3,7 @@ from .managers import RoomNightManager, BookingManager
 from staytrade.shared.abstract_models import SoftDeletedTimestamped
 from staytrade.providers.models import RoomType
 from staytrade.users.models import User
+from django.utils.translation import gettext_lazy as _
 
 
 class RoomNightOwner(SoftDeletedTimestamped):
@@ -37,6 +38,11 @@ class RoomNight(SoftDeletedTimestamped):
 
 
 class Booking(SoftDeletedTimestamped):
+    class BookingStatus(models.TextChoices):
+        PENDING = "PE", _("Pending")
+        CONFIRMED = "CO", _("Confirmed")
+        CANCELLED = "CA", _("Cancelled")
+
     check_in = models.DateTimeField(
         null=False,
         blank=False,
@@ -46,13 +52,7 @@ class Booking(SoftDeletedTimestamped):
         blank=False,
     )
     status = models.CharField(
-        max_length=20,
-        choices=[
-            ("pending", "Pendiente"),
-            ("confirmed", "Confirmada"),
-            ("cancelled", "Cancelada"),
-        ],
-        default="pending",
+        max_length=2, choices=BookingStatus, default=BookingStatus.PENDING
     )
     room_nights = models.ManyToManyField(RoomNight)
     objects = BookingManager()
