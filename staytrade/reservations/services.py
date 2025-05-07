@@ -53,8 +53,6 @@ class RoomAvailabilityService:
 
 class BookingService:
     @staticmethod
-    def create_booking(check_in, check_out, room_nights, owner_data):
+    def create_pre_booking(check_in, check_out, room_nights):
         with transaction.atomic():
-            return Booking.objects.create_with_room_nights(
-                check_in, check_out, room_nights
-            )
+            return Booking.objects.create_pre_booking(check_in, check_out)

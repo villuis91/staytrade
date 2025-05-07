@@ -2,13 +2,21 @@ from django.db.models import Manager, Count
 
 
 class BookingManager(Manager):
-    def create_with_room_nights(self, check_in, check_out, room_nights):
+    def create_pre_booking(self, check_in, check_out):
         """
-        Crea un booking y asocia las room_nights
+        Create a booking previous to be paid.
         """
-        booking = self.create(check_in=check_in, check_out=check_out, status="pending")
-        booking.room_nights.add(*room_nights)
+        booking = self.create(
+            check_in=check_in, check_out=check_out, status=self.status.PENDING
+        )
         return booking
+
+    def confirm_booking(self, booking_id):
+        # TODO: When confirmed, create associated room nights (Check once again the status)
+        return self.filter(id=booking_id).update(status=self.status.CONFIRMED)
+
+    def cancel_booking(self, booking_id):
+        return self.filter(id=booking_id).update(status=self.status.CANCELLED)
 
 
 class RoomNightManager(Manager):
@@ -37,3 +45,6 @@ class RoomNightManager(Manager):
             room_type=room_type,
             owner=owner,
         )
+
+    def change_owner(self, room_nights, new_owner):
+        return self.filter(id__in=room_nights).update(owner=new_owner)
